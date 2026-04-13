@@ -38,9 +38,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function bussinesses()
+    public function businesses()
     {
-        return $this->hasMany(Bussiness::class);
+        return $this->hasMany(Business::class);
     }
 
     public function appointments()

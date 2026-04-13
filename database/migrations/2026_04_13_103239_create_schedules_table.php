@@ -4,19 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone');
-            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete();
+            $table->integer('day_of_week');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('schedules');
     }
 };

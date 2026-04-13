@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('businesses', function (Blueprint $table) {
+        Schema::create('blocked_times', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->string('phone');
-            $table->string('address');
-            $table->string('email')->unique();
-            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+            $table->date('block_date');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->string('reason');
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('businesses');
+        Schema::dropIfExists('blocked_times');
     }
 };

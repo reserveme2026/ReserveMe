@@ -14,10 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('duration_minutes');
-            $table->float('price');
-            $table->foreignId('bussiness_id')->constrained('bussinesses');
+            $table->decimal('price', 10, 2);
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete();
         });
     }
 

@@ -11,13 +11,13 @@ class Appointment extends Model
         'start_time',
         'status',
         'user_id',
-        'bussiness_id',
+        'business_id',
         'employee_id',
         'service_id',
     ];
-    public function bussiness()
+    public function business()
     {
-        return $this->belongsTo(Bussiness::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function user()

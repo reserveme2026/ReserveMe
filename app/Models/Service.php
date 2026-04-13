@@ -11,12 +11,12 @@ class Service extends Model
         'description',
         'duration_minutes',
         'price',
-        'bussiness_id'
+        'business_id'
     ];
 
-    public function bussiness()
+    public function business()
     {
-        return $this->belongsTo(Bussiness::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function appointments()

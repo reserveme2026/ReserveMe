@@ -14,12 +14,18 @@ return new class extends Migration {
             $table->id();
             $table->timestamps();
             $table->date('appointment_date');
-            $table->timestamp('start_time');
-            $table->string('status');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('bussiness_id')->constrained('bussinesses');
-            $table->foreignId('employee_id')->constrained('employees');
-            $table->foreignId('service_id')->constrained('services');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->string('status')->default('pending');
+            $table->string('service_name');
+            $table->integer('service_duration_minutes');
+            $table->decimal('service_price',10,2);
+            $table->string('notes')->nullable();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
+            $table->unique(['employee_id','appointment_date','start_time']);
 
         });
     }
