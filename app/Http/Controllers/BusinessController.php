@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BusinessController extends Controller
@@ -12,7 +13,8 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        //
+        $businesses = Business::all();
+        return view('business.index', compact('businesses'));
     }
 
     /**
@@ -20,7 +22,8 @@ class BusinessController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::where('role', 'owner')->get();
+        return view('businesses.create', compact('users'));
     }
 
     /**
@@ -28,7 +31,16 @@ class BusinessController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $business = $request->validate([
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'required|string|max:255',
+            'email' => 'required|email',
+            'owner_id' => 'required'
+        ]);
+        Business::create($business);
+        return redirect()->route('businesses.index')->with('success', 'Negocio creado correctamente');
     }
 
     /**
@@ -36,7 +48,7 @@ class BusinessController extends Controller
      */
     public function show(Business $business)
     {
-        //
+        return view('business.show', compact('business'));
     }
 
     /**
@@ -44,7 +56,7 @@ class BusinessController extends Controller
      */
     public function edit(Business $business)
     {
-        //
+        return view('business.edit', compact('business'));
     }
 
     /**
@@ -52,7 +64,16 @@ class BusinessController extends Controller
      */
     public function update(Request $request, Business $business)
     {
-        //
+        $update = $request->validate([
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'required|string|max:255',
+            'email' => 'required|email',
+            'owner_id' => 'required'
+        ]);
+        $business->update($update);
+        return redirect()->route('businesses.index')->with('success', 'Negocio actualizado');
     }
 
     /**
@@ -60,6 +81,7 @@ class BusinessController extends Controller
      */
     public function destroy(Business $business)
     {
-        //
+        $business->delete();
+        return redirect()->route('business.index')->with('success','Negocio eliminado');
     }
 }
