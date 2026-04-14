@@ -57,7 +57,8 @@ class BusinessController extends Controller
      */
     public function edit(Business $business)
     {
-        return view('businesses.edit', compact('business'));
+        $users = User::all();
+        return view('businesses.edit', compact('business', 'users'));
     }
 
     /**
@@ -65,6 +66,7 @@ class BusinessController extends Controller
      */
     public function update(Request $request, Business $business)
     {
+        
         $data = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:255',

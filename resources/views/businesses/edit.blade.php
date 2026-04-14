@@ -13,44 +13,54 @@
     @include('components.header')
     <div class="container">
         <div class="row">
-            <form action="{{ route('businesses.store') }}" method="post">
+            <form action="{{ route('businesses.update', $business) }}" method="post">
                 @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label for="name">Nombre</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" aria-describedby="name" value="{{ $business->name }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name"
+                        aria-describedby="name" value="{{ $business->name }}">
                     @error('name')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="description">Descripción</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="description" id="description" aria-describedby="description" value="{{ $business->description }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="description"
+                        id="description" aria-describedby="description" value="{{ $business->description }}">
                     @error('description')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="phone">Teléfono</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="phone" id="phone" aria-describedby="phone" value="{{ $business->phone }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="phone" id="phone"
+                        aria-describedby="phone" value="{{ $business->phone }}">
                     @error('phone')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="address">Direccion</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="address" id="address" aria-describedby="address" value="{{ $business->address }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="address"
+                        id="address" aria-describedby="address" value="{{ $business->address }}">
                     @error('address')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="email" id="email" aria-describedby="email" value="{{ $business->email }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="email" id="email"
+                        aria-describedby="email" value="{{ $business->email }}">
                     @error('email')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-                <select name="owner_id" id="">
-                    @foreach ($users as $user)
-                    <option value="{{ $user->id }}" value={{ $user->id }}>{{ $user->name }}</option>
-                    @endforeach
-                </select>
-                <button type="submit" class="btn btn-primary">Crear</button>
+                <div class="form-group">
+                    <label for="owner_id">Propietario</label>
+                    <select class="form-select" name="owner_id" id="owner_id">
+                        @foreach ($users as $user)
+                            <option value="{{ $user->id }}" @selected($user->id == $business->owner_id)>{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Confirmar los cambios</button>
+
             </form>
         </div>
     </div>
