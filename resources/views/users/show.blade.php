@@ -12,16 +12,13 @@
 
 <body>
     @include("components.header")
-    <h2>Negocio</h2>
-    <p class="bg-info">Este es el negocio que buscas</p>
+    <h2>Usuario</h2>
 
 
-    <p>Nombre: {{ $business->name }}</p>
-    <p>Descripción: {{ $business->description }}</p>
-    <p>Teléfono: {{ $business->phone }}</p>
-    <p>Dirección: {{ $business->address }}</p>
-    <p>Email: {{ $business->email }}</p>
-
+    <p>Nombre: {{ $user->name }}</p>
+    <p>Email: {{ $user->email }}</p>
+    <p>Rol: {{ $user->role }}</p>
+    <a href="{{ route('users.index') }}">Volver</a>
 </body>
 
 </html>

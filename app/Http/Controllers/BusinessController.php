@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessController extends Controller
 {
@@ -14,7 +15,7 @@ class BusinessController extends Controller
     public function index()
     {
         $businesses = Business::all();
-        return view('business.index', compact('businesses'));
+        return view('businesses.index', compact('businesses'));
     }
 
     /**
@@ -37,8 +38,8 @@ class BusinessController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'required|string|max:255',
             'email' => 'required|email',
-            'owner_id' => 'required'
         ]);
+        $business['owner_id'] = auth()->id();
         Business::create($business);
         return redirect()->route('businesses.index')->with('success', 'Negocio creado correctamente');
     }
@@ -56,7 +57,7 @@ class BusinessController extends Controller
      */
     public function edit(Business $business)
     {
-        return view('business.edit', compact('business'));
+        return view('businesses.edit', compact('business'));
     }
 
     /**
@@ -64,7 +65,7 @@ class BusinessController extends Controller
      */
     public function update(Request $request, Business $business)
     {
-        $update = $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
@@ -72,7 +73,7 @@ class BusinessController extends Controller
             'email' => 'required|email',
             'owner_id' => 'required'
         ]);
-        $business->update($update);
+        $business->update($data);
         return redirect()->route('businesses.index')->with('success', 'Negocio actualizado');
     }
 
@@ -82,6 +83,6 @@ class BusinessController extends Controller
     public function destroy(Business $business)
     {
         $business->delete();
-        return redirect()->route('business.index')->with('success','Negocio eliminado');
+        return redirect()->route('businesses.index')->with('success','Negocio eliminado');
     }
 }

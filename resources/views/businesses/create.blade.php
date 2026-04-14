@@ -17,29 +17,41 @@
                 @csrf
                 <div class="form-group">
                     <label for="name">Nombre</label>
-                    <input type="text" class="form-control" name="name" id="name" aria-describedby="name" value="{{ old('name') }}">
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" aria-describedby="name" value="{{ old('name') }}">
+                    @error('name')<small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="form-group">
-                    <label for="name">Descripción</label>
-                    <input type="text" class="form-control" name="description" id="description" aria-describedby="description" value="{{ old('description') }}">
+                    <label for="description">Descripción</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="description" id="description" aria-describedby="description" value="{{ old('description') }}">
+                    @error('description')<small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="form-group">
-                    <label for="name">Teléfono</label>
-                    <input type="text" class="form-control" name="phone" id="phone" aria-describedby="phone" value="{{ old('phone') }}">
+                    <label for="phone">Teléfono</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="phone" id="phone" aria-describedby="phone" value="{{ old('phone') }}">
+                    @error('phone')<small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="form-group">
-                    <label for="name">Direccion</label>
-                    <input type="text" class="form-control" name="address" id="address" aria-describedby="address" value="{{ old('address') }}">
+                    <label for="address">Direccion</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="address" id="address" aria-describedby="address" value="{{ old('address') }}">
+                    @error('address')<small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="form-group">
-                    <label for="name">Email</label>
-                    <input type="text" class="form-control" name="email" id="email" aria-describedby="email" value="{{ old('email') }}">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="email" id="email" aria-describedby="email" value="{{ old('email') }}">
+                    @error('email')<small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
+                <!--
                 <select name="owner_id" id="">
                     @foreach ($users as $user)
                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
+                -->
                 <button type="submit" class="btn btn-primary">Crear</button>
             </form>
         </div>
