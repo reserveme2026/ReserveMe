@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //
+        $employees = Employee::all();
+        return view('employees.index', compact('employees'));
     }
 
     /**
@@ -20,7 +22,8 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        $businesses = Business::where('owner_id', auth()->id())->get();
+        return view('employees.create', compact('businesses'));
     }
 
     /**
@@ -28,7 +31,14 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $employee = $request->validate([
+            'name'=> 'required|string|max:100',
+            'email'=> 'required|email',
+            'phone'=> 'string|max:20',
+            'business_id' => 'required|exists:businesses,id',
+        ]);
+        Employee::create($employee);
+        return redirect()->route('employees.index')->with('success','Empleado creado correctamente');
     }
 
     /**
@@ -36,7 +46,7 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        //
+        return view('employees.show', compact('employee'));
     }
 
     /**
@@ -44,7 +54,8 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        //
+        $businesses = Business::where('owner_id', auth()->id())->get();
+        return view('employees.edit', compact('employee','businesses'));
     }
 
     /**
@@ -52,7 +63,14 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        //
+        $data = $request->validate([
+            'name'=> 'required|string|max:100',
+            'email'=> 'required|email',
+            'phone'=> 'string|max:20',
+            'business_id' => 'required|exists:businesses,id',
+        ]);
+        $employee->update($data);
+        return redirect()->route('employees.index')->with('success','Empleado actualizado');
     }
 
     /**
@@ -60,6 +78,7 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        $employee->delete();
+        return redirect()->route('employees.index')->with('success','Empleado eliminado');
     }
 }

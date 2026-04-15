@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>usuario</title>
+    <title>empleados</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -12,15 +12,14 @@
 
 <body>
     @include("components.header")
-    <h2>Usuario</h2>
+    <h2>Empleado</h2>
 
+    <p>Nombre: {{ $employee->name }}</p>
+    <p>Email: {{ $employee->email }}</p>
+    <p>Teléfono: {{ $employee->phone }}</p>
+    <p>Negocio al que pertenece: {{ $employee->business_id->name }}</p>
+    
 
-    <p>Nombre: {{ $service->name }}</p>
-    <p>Descripción {{ $service->description }}</p>
-    <p>Duración: {{ $service->duration_minutes }}</p>
-    <p>Precio: {{ $service->price }}</p>
-    <p>Negocio: {{ $service->business_id->name }}</p>
-    <a href="{{ route('services.index') }}">Volver</a>
 </body>
 
 </html>

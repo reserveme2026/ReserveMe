@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        //
+        $services = Service::all();
+        return view('services.index', compact('services'));
     }
 
     /**
@@ -20,7 +22,8 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        //
+        $businesses = Business::where('owner_id', auth()->id())->get();
+        return view('services.create', compact('businesses'));
     }
 
     /**
@@ -28,7 +31,15 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $service = $request->validate([
+            'name'=> 'required|string|max:100',
+            'description'=> 'string|max:255',
+            'duration_minutes'=> 'required|integer',
+            'price'=> 'required|numeric',
+            'business_id' => 'required|exists:businesses,id',
+        ]);
+        Service::create($service);
+        return redirect()->route('services.index')->with('success','Servicio creado');
     }
 
     /**
@@ -36,7 +47,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        //
+        return view('services.show', compact('service'));
     }
 
     /**
@@ -44,7 +55,8 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        //
+        $businesses = Business::where('owner_id', auth()->id())->get();
+        return view('services.edit', compact('service', 'businesses'));
     }
 
     /**
@@ -52,7 +64,15 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
-        //
+        $data = $request->validate([
+            'name'=> 'required|string|max:100',
+            'description'=> 'string|max:255',
+            'duration_minutes'=> 'required|integer',
+            'price'=> 'required|numeric',
+            'business_id' => 'required|exists:businesses,id',
+        ]);
+        $service->update($data);
+        return redirect()->route('services.index')->with('success','Servicio actualizado');
     }
 
     /**
@@ -60,6 +80,7 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
-        //
+        $service->delete();
+        return redirect()->route('services.index')->with('success','Servicio eliminado');
     }
 }
