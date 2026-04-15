@@ -13,7 +13,6 @@
     @include("components.header")
 
     <div class="container mt-4">
-        <h2>Servicios</h2>
 
         @if (session('deleted'))
             <div class="alert alert-success">
