@@ -11,7 +11,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/businesses');
 });
-Route::resource('appointments', AppointmentController::class);
+
+
+Route::get('/businesses/{business}/appointments/create', [AppointmentController::class, 'create'])
+->name('business.appointments.create');
+Route::post('/businesses/{business}/appointments', [AppointmentController::class, 'store'])
+->name('business.appointments.store');
+
+Route::resource('appointments', AppointmentController::class)->except(['create','store']);
 Route::resource('businesses', BusinessController::class);
 Route::resource('employees', EmployeeController::class);
 Route::resource('services', ServiceController::class);
