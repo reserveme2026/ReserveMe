@@ -45,12 +45,12 @@
                     <label for="business_id">Negocio</label>
                     <select class="form-select" name="business_id" id="business_id">
                         @foreach ($businesses as $business)
-                            <option value="{{ $business->id }}" {{ old('business_id', $employee->business_id) == $business->id ? 'selected' : '' }}>{{ $business->name }}</option>
+                            <option value="{{ $business->id }}" @selected($business->id == $service->business_id)>{{ $business->name }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
             </form>
         </div>
     </div>

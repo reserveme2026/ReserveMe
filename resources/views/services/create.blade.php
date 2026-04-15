@@ -40,13 +40,22 @@
                     @error('price')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="business_id">Negocio</label>
+                    <select class="form-select" name="business_id" id="business_id">
+                        @foreach ($businesses as $business)
+                            <option value="{{ $business->id }}">{{ $business->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+<!--
                 <select name="business_id" id="">
                     @foreach ($businesses as $business)
                     <option value="{{ $business->id }}">{{ $business->name }}</option>
                     @endforeach
                 </select>
-
+-->
                 <button type="submit" class="btn btn-primary">Crear</button>
             </form>
         </div>

@@ -22,7 +22,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        $businesses = Business::where('owner_id', auth()->id())->get();
+        $businesses = Business::all();
         return view('services.create', compact('businesses'));
     }
 
@@ -55,7 +55,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        $businesses = Business::where('owner_id', auth()->id())->get();
+        $businesses = Business::all();
         return view('services.edit', compact('service', 'businesses'));
     }
 

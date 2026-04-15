@@ -26,10 +26,10 @@
                 <div class="col-md-4 mt-3">
                     <div class="card bg-light border-warning">
                         <div class="card-body">
-                            <p>{{ $service->name }}</p>
+                            <p><strong>{{ $service->name }}</strong></p>
                             <p>{{ $service->description }}</p>
-                            <p>Duración: {{ $service->duration_minutes }}</p>
-                            <p>Precio: {{ $service->price }}</p>
+                            <p>Duración: {{ $service->duration_minutes }} mins</p>
+                            <p>Precio: {{ $service->price }}€</p>
                             <a href="{{ route('services.edit', $service) }}"><button type="button"
                                     class="btn btn-primary ">Editar</button></a>
                             <form action="{{ route('services.destroy', $service) }}" method="POST" class="d-inline">
