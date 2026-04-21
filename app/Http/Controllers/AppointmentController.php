@@ -6,8 +6,9 @@ use App\Models\Appointment;
 use App\Models\Business;
 use App\Models\Employee;
 use App\Models\Service;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
@@ -47,7 +48,7 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Business $business)
     {
         if (auth()->user()->role != 'client') {
             return redirect()->route('appointments.index')
@@ -121,5 +122,31 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         //
+    }
+
+    private function hasOverlap($employee, $date, $start, $end) {
+        $appointments = Appointment::where('employee_id', $employee->id)->where('date', $date)
+        ->get();
+        foreach ($appointments as $appointment) {
+            if ($start < $appointment->start && $end > $appointment->end) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function inSchedule($employee, $start, $end) {
+        $dayOfWeek = $start->$dayOfWeek;
+        $schedules = Shedu::where('$employee', $employee->id)->where('day_of_week', $dayOfWeek)
+        ->get();
+        foreach ($schedules as $schedule) {
+            $sheduleStart = Carbon::parse($start->toDateString() . ' ' . $schedule->start_time);
+            $sheduleEnd = Carbon::parse($start->toDateString() . ' ' . $schedule->end_time);
+            if ($start >= $sheduleStart && $end <= $sheduleEnd){
+                return true;
+            }
+        
+        }
+        return false;
     }
 }
