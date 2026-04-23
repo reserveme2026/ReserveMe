@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear horario</title>
+    <title>Crear bloqueo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -14,25 +14,16 @@
 
     <div class="container">
         <div class="row">
-            <h1>Crear horario para {{ $employee->name }}</h1>
+            <h1>Crear bloqueo para {{ $employee->name }}</h1>
 
-            <form action="{{ route('employees.schedules.store', $employee) }}" method="post">
+            <form action="{{ route('employees.blocked-times.store', $employee) }}" method="post">
                 @csrf
 
                 <div class="form-group">
-                    <label for="day_of_week">Día de la semana</label>
-                    <select name="day_of_week" id="day_of_week"
-                        class="form-control @error('day_of_week') is-invalid @enderror">
-                        <option value="">Selecciona un día</option>
-                        <option value="0" @if (old('day_of_week') == '0') selected @endif>Domingo</option>
-                        <option value="1" @if (old('day_of_week') == '1') selected @endif>Lunes</option>
-                        <option value="2" @if (old('day_of_week') == '2') selected @endif>Martes</option>
-                        <option value="3" @if (old('day_of_week') == '3') selected @endif>Miércoles</option>
-                        <option value="4" @if (old('day_of_week') == '4') selected @endif>Jueves</option>
-                        <option value="5" @if (old('day_of_week') == '5') selected @endif>Viernes</option>
-                        <option value="6" @if (old('day_of_week') == '6') selected @endif>Sábado</option>
-                    </select>
-                    @error('day_of_week')<small class="text-danger">{{ $message }}</small>@enderror
+                    <label for="date">Fecha</label>
+                    <input type="date" class="form-control @error('date') is-invalid @enderror"
+                        name="date" id="date" value="{{ old('date') }}">
+                    @error('date')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
 
                 <div class="form-group">
@@ -49,9 +40,16 @@
                     @error('end_time')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="reason">Motivo</label>
+                    <input type="text" class="form-control @error('reason') is-invalid @enderror"
+                        name="reason" id="reason" value="{{ old('reason') }}">
+                    @error('reason')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3">Crear</button>
 
-                <a href="{{ route('employees.schedules.index', $employee) }}" class="btn btn-secondary mt-3">
+                <a href="{{ route('employees.blocked-times.index', $employee) }}" class="btn btn-secondary mt-3">
                     Volver
                 </a>
             </form>
