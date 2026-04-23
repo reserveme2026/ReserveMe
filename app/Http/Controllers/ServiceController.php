@@ -22,8 +22,19 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        $businesses = Business::all();
+        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'admin') {
+            $businesses = Business::all();
+        } else {
+            $businesses = Business::where('owner_id', auth()->id())->get();
+        }
+
         return view('services.create', compact('businesses'));
+
+        return view('services.create');
     }
 
     /**
@@ -31,15 +42,18 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+            abort(403);
+        }
         $service = $request->validate([
-            'name'=> 'required|string|max:100',
-            'description'=> 'string|max:255',
-            'duration_minutes'=> 'required|integer',
-            'price'=> 'required|numeric',
+            'name' => 'required|string|max:100',
+            'description' => 'string|max:255',
+            'duration_minutes' => 'required|integer',
+            'price' => 'required|numeric',
             'business_id' => 'required|exists:businesses,id',
         ]);
         Service::create($service);
-        return redirect()->route('services.index')->with('success','Servicio creado');
+        return redirect()->route('services.index')->with('success', 'Servicio creado');
     }
 
     /**
@@ -65,14 +79,14 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $data = $request->validate([
-            'name'=> 'required|string|max:100',
-            'description'=> 'string|max:255',
-            'duration_minutes'=> 'required|integer',
-            'price'=> 'required|numeric',
+            'name' => 'required|string|max:100',
+            'description' => 'string|max:255',
+            'duration_minutes' => 'required|integer',
+            'price' => 'required|numeric',
             'business_id' => 'required|exists:businesses,id',
         ]);
         $service->update($data);
-        return redirect()->route('services.index')->with('success','Servicio actualizado');
+        return redirect()->route('services.index')->with('success', 'Servicio actualizado');
     }
 
     /**
@@ -81,6 +95,6 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         $service->delete();
-        return redirect()->route('services.index')->with('success','Servicio eliminado');
+        return redirect()->route('services.index')->with('success', 'Servicio eliminado');
     }
 }

@@ -45,13 +45,6 @@
                     @error('email')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-                <!--
-                <select name="owner_id" id="">
-                    @foreach ($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
-                -->
                 <button type="submit" class="btn btn-primary">Crear</button>
             </form>
         </div>

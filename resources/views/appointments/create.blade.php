@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear horario</title>
+    <title>Crear cita</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -14,44 +14,69 @@
 
     <div class="container">
         <div class="row">
-            <h1>Crear horario para {{ $employee->name }}</h1>
+            <h1>Pedir cita en {{ $business->name }}</h1>
 
-            <form action="{{ route('employees.schedules.store', $employee) }}" method="post">
+            @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+            @endif
+
+            <form action="{{ route('appointments.store', $business) }}" method="post">
                 @csrf
 
                 <div class="form-group">
-                    <label for="day_of_week">Día de la semana</label>
-                    <select name="day_of_week" id="day_of_week"
-                        class="form-control @error('day_of_week') is-invalid @enderror">
-                        <option value="">Selecciona un día</option>
-                        <option value="0" @if (old('day_of_week') == '0') selected @endif>Domingo</option>
-                        <option value="1" @if (old('day_of_week') == '1') selected @endif>Lunes</option>
-                        <option value="2" @if (old('day_of_week') == '2') selected @endif>Martes</option>
-                        <option value="3" @if (old('day_of_week') == '3') selected @endif>Miércoles</option>
-                        <option value="4" @if (old('day_of_week') == '4') selected @endif>Jueves</option>
-                        <option value="5" @if (old('day_of_week') == '5') selected @endif>Viernes</option>
-                        <option value="6" @if (old('day_of_week') == '6') selected @endif>Sábado</option>
+                    <label for="employee_id">Empleado</label>
+                    <select name="employee_id" id="employee_id"
+                        class="form-control @error('employee_id') is-invalid @enderror">
+                        <option value="">Selecciona un empleado</option>
+                        @foreach ($employees as $employee)
+                        <option value="{{ $employee->id }}" @if (old('employee_id')==$employee->id) selected @endif>
+                            {{ $employee->name }}
+                        </option>
+                        @endforeach
                     </select>
-                    @error('day_of_week')<small class="text-danger">{{ $message }}</small>@enderror
+                    @error('employee_id')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="start_time">Hora inicio</label>
-                    <input type="time" class="form-control @error('start_time') is-invalid @enderror"
-                        name="start_time" id="start_time" value="{{ old('start_time') }}">
-                    @error('start_time')<small class="text-danger">{{ $message }}</small>@enderror
+                    <label for="service_id">Servicio</label>
+                    <select name="service_id" id="service_id"
+                        class="form-control @error('service_id') is-invalid @enderror">
+                        <option value="">Selecciona un servicio</option>
+                        @foreach ($services as $service)
+                        <option value="{{ $service->id }}" @if (old('service_id')==$service->id) selected @endif>
+                            {{ $service->name }} - {{ $service->duration_minutes }} min - {{ $service->price }} €
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('service_id')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="end_time">Hora fin</label>
-                    <input type="time" class="form-control @error('end_time') is-invalid @enderror"
-                        name="end_time" id="end_time" value="{{ old('end_time') }}">
-                    @error('end_time')<small class="text-danger">{{ $message }}</small>@enderror
+                    <label for="date">Fecha</label>
+                    <input type="date" class="form-control @error('date') is-invalid @enderror"
+                        name="date" id="date" value="{{ old('date') }}">
+                    @error('date')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-3">Crear</button>
+                <div class="form-group">
+                    <label for="time">Hora</label>
+                    <input type="time" class="form-control @error('time') is-invalid @enderror"
+                        name="time" id="time" value="{{ old('time') }}" step="900">
+                    @error('time')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea name="description" id="description"
+                        class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                    @error('description')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
 
-                <a href="{{ route('employees.schedules.index', $employee) }}" class="btn btn-secondary mt-3">
+                <button type="submit" class="btn btn-primary mt-3">Crear cita</button>
+
+                <a href="{{ route('businesses.index') }}" class="btn btn-secondary mt-3">
                     Volver
                 </a>
             </form>

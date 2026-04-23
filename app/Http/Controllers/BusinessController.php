@@ -23,8 +23,11 @@ class BusinessController extends Controller
      */
     public function create()
     {
-        $users = User::where('role', 'owner')->get();
-        return view('businesses.create', compact('users'));
+        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+            abort(403);
+        }
+
+        return view('businesses.create');
     }
 
     /**
@@ -32,6 +35,9 @@ class BusinessController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+            abort(403);
+        }
         $business = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:255',
@@ -49,7 +55,7 @@ class BusinessController extends Controller
      */
     public function show(Business $business)
     {
-        return view('business.show', compact('business'));
+        return view('businesses.show', compact('business'));
     }
 
     /**
@@ -57,7 +63,15 @@ class BusinessController extends Controller
      */
     public function edit(Business $business)
     {
-        $users = User::all();
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+        $users = User::where('role', 'owner')->get();
+
         return view('businesses.edit', compact('business', 'users'));
     }
 
@@ -66,14 +80,19 @@ class BusinessController extends Controller
      */
     public function update(Request $request, Business $business)
     {
-        
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
         $data = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'required|string|max:255',
-            'email' => 'required|email',
-            'owner_id' => 'required'
+            'email' => 'required|email'
         ]);
         $business->update($data);
         return redirect()->route('businesses.index')->with('success', 'Negocio actualizado');
@@ -84,7 +103,17 @@ class BusinessController extends Controller
      */
     public function destroy(Business $business)
     {
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
         $business->delete();
-        return redirect()->route('businesses.index')->with('success','Negocio eliminado');
+
+        return redirect()->route('businesses.index')
+            ->with('success', 'Negocio eliminado correctamente');
     }
 }

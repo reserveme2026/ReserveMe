@@ -22,7 +22,7 @@ class BlockedTimeController extends Controller
             ->orderBy('start_time')
             ->get();
 
-        return view('blocked-times.index', compact('employee', 'blockedTimes'));
+        return view('blockedTimes.index', compact('employee', 'blockedTimes'));
     }
 
     /**
@@ -36,7 +36,7 @@ class BlockedTimeController extends Controller
             abort(403);
         }
 
-        return view('blocked-times.create', compact('employee'));
+        return view('blockeTimes.create', compact('employee'));
     }
 
 
@@ -66,7 +66,7 @@ class BlockedTimeController extends Controller
             'reason' => $request->reason,
         ]);
 
-        return redirect()->route('employees.blocked-times.index', $employee)
+        return redirect()->route('employees.blockedTimes.index', $employee)
             ->with('success', 'Bloqueo creado correctamente');
     }
 
@@ -85,7 +85,7 @@ class BlockedTimeController extends Controller
             abort(403);
         }
 
-        return view('blocked-times.show', compact('employee', 'blockedTime'));
+        return view('blockedTimes.show', compact('employee', 'blockedTime'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -102,7 +102,7 @@ class BlockedTimeController extends Controller
             abort(403);
         }
 
-        return view('blocked-times.edit', compact('employee', 'blockedTime'));
+        return view('blockedTimes.edit', compact('employee', 'blockedTime'));
     }
 
     /**
@@ -134,7 +134,7 @@ class BlockedTimeController extends Controller
             'reason' => $request->reason,
         ]);
 
-        return redirect()->route('employees.blocked-times.index', $employee)
+        return redirect()->route('employees.blockedTimes.index', $employee)
             ->with('success', 'Bloqueo actualizado correctamente');
     }
 
@@ -155,7 +155,7 @@ class BlockedTimeController extends Controller
 
         $blockedTime->delete();
 
-        return redirect()->route('employees.blocked-times.index', $employee)
+        return redirect()->route('employees.blockedTimes.index', $employee)
             ->with('success', 'Bloqueo eliminado correctamente');
     }
 }

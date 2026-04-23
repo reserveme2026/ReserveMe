@@ -41,11 +41,11 @@
             </div>
 
             <div class="mt-3">
-                <a href="{{ route('employees.blocked-times.edit', [$employee, $blockedTime]) }}" class="btn btn-warning">
+                <a href="{{ route('employees.blockedTimes.edit', [$employee, $blockedTime]) }}" class="btn btn-warning">
                     Editar
                 </a>
 
-                <a href="{{ route('employees.blocked-times.index', $employee) }}" class="btn btn-secondary">
+                <a href="{{ route('employees.blockedTimes.index', $employee) }}" class="btn btn-secondary">
                     Volver
                 </a>
             </div>

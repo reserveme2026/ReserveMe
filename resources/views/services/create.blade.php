@@ -49,13 +49,6 @@
                         @endforeach
                     </select>
                 </div>
-<!--
-                <select name="business_id" id="">
-                    @foreach ($businesses as $business)
-                    <option value="{{ $business->id }}">{{ $business->name }}</option>
-                    @endforeach
-                </select>
--->
                 <button type="submit" class="btn btn-primary">Crear</button>
             </form>
         </div>

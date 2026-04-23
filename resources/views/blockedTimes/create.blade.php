@@ -16,7 +16,7 @@
         <div class="row">
             <h1>Crear bloqueo para {{ $employee->name }}</h1>
 
-            <form action="{{ route('employees.blocked-times.store', $employee) }}" method="post">
+            <form action="{{ route('employees.blockedTimes.store', $employee) }}" method="post">
                 @csrf
 
                 <div class="form-group">
@@ -49,7 +49,7 @@
 
                 <button type="submit" class="btn btn-primary mt-3">Crear</button>
 
-                <a href="{{ route('employees.blocked-times.index', $employee) }}" class="btn btn-secondary mt-3">
+                <a href="{{ route('employees.blockedTimes.index', $employee) }}" class="btn btn-secondary mt-3">
                     Volver
                 </a>
             </form>

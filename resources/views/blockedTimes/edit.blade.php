@@ -16,7 +16,7 @@
         <div class="row">
             <h1>Editar bloqueo de {{ $employee->name }}</h1>
 
-            <form action="{{ route('employees.blocked-times.update', [$employee, $blockedTime]) }}" method="post">
+            <form action="{{ route('employees.blockedTimes.update', [$employee, $blockedTime]) }}" method="post">
                 @csrf
                 @method('PUT')
 
@@ -50,7 +50,7 @@
 
                 <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
 
-                <a href="{{ route('employees.blocked-times.index', $employee) }}" class="btn btn-secondary mt-3">
+                <a href="{{ route('employees.blockedTimes.index', $employee) }}" class="btn btn-secondary mt-3">
                     Volver
                 </a>
             </form>

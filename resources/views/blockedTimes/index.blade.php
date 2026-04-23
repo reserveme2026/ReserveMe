@@ -22,7 +22,7 @@
                 </div>
             @endif
 
-            <a href="{{ route('employees.blocked-times.create', $employee) }}" class="btn btn-primary mb-3">
+            <a href="{{ route('employees.blockedTimes.create', $employee) }}" class="btn btn-primary mb-3">
                 Crear bloqueo
             </a>
 
@@ -45,17 +45,17 @@
                                 <td>{{ $blockedTime->end_time }}</td>
                                 <td>{{ $blockedTime->reason }}</td>
                                 <td>
-                                    <a href="{{ route('employees.blocked-times.show', [$employee, $blockedTime]) }}"
+                                    <a href="{{ route('employees.blockedTimes.show', [$employee, $blockedTime]) }}"
                                         class="btn btn-info btn-sm">
                                         Ver
                                     </a>
 
-                                    <a href="{{ route('employees.blocked-times.edit', [$employee, $blockedTime]) }}"
+                                    <a href="{{ route('employees.blockedTimes.edit', [$employee, $blockedTime]) }}"
                                         class="btn btn-warning btn-sm">
                                         Editar
                                     </a>
 
-                                    <form action="{{ route('employees.blocked-times.destroy', [$employee, $blockedTime]) }}"
+                                    <form action="{{ route('employees.blockedTimes.destroy', [$employee, $blockedTime]) }}"
                                         method="post" style="display:inline-block;">
                                         @csrf
                                         @method('DELETE')

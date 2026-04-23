@@ -51,14 +51,18 @@
                     @error('email')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
+                @if (auth()->user()->role == 'admin')
                 <div class="form-group">
                     <label for="owner_id">Propietario</label>
                     <select class="form-select" name="owner_id" id="owner_id">
                         @foreach ($users as $user)
-                            <option value="{{ $user->id }}" @selected($user->id == $business->owner_id)>{{ $user->name }}</option>
+                        <option value="{{ $user->id }}" @if ($user->id == $business->owner_id) selected @endif>
+                            {{ $user->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
+                @endif
                 <button type="submit" class="btn btn-primary mt-3">Confirmar los cambios</button>
 
             </form>
