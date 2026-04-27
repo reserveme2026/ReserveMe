@@ -14,7 +14,6 @@ Route::get('/', function () {
     return redirect('/businesses');
 });
 
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
@@ -59,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees.schedules', ScheduleController::class);
 
     Route::resource('employees.blockedTimes', BlockedTimeController::class);
+
     Route::post('/owner-request', [UserController::class, 'requestOwner'])
         ->name('users.requestOwner');
 
@@ -67,5 +67,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/users/{user}/reject-owner', [UserController::class, 'rejectOwner'])
         ->name('users.rejectOwner');
+
     Route::resource('users', UserController::class);
 });

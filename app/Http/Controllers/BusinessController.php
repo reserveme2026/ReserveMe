@@ -14,7 +14,18 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        $businesses = Business::all();
+        if (auth()->check()) {
+            $user = auth()->user();
+            if ($user->role == 'admin') {
+                $businesses = Business::all();
+            } elseif ($user->role == 'owner') {
+                $businesses = Business::where('owner_id', $user->id)->get();
+            } else {
+                $businesses = Business::all();
+            }
+        } else {
+            $businesses = Business::all();
+        }
         return view('businesses.index', compact('businesses'));
     }
 
