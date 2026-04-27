@@ -11,90 +11,155 @@ class ServiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Business $business)
     {
-        $services = Service::all();
-        return view('services.index', compact('services'));
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        $services = Service::where('business_id', $business->id)->get();
+
+        return view('services.index', compact('business', 'services'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Business $business)
     {
-        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'admin') {
-            $businesses = Business::all();
-        } else {
-            $businesses = Business::where('owner_id', auth()->id())->get();
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
         }
 
-        return view('services.create', compact('businesses'));
-
-        return view('services.create');
+        return view('services.create', compact('business'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Business $business)
     {
-        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
         $service = $request->validate([
-            'name' => 'required|string|max:100',
-            'description' => 'string|max:255',
-            'duration_minutes' => 'required|integer',
-            'price' => 'required|numeric',
-            'business_id' => 'required|exists:businesses,id',
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string|max:255',
+            'duration_minutes' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0',
         ]);
+
+        $service['business_id'] = $business->id;
+
         Service::create($service);
-        return redirect()->route('services.index')->with('success', 'Servicio creado');
+
+        return redirect()->route('businesses.services.index', $business)
+            ->with('success', 'Servicio creado correctamente');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Service $service)
+    public function show(Business $business, Service $service)
     {
-        return view('services.show', compact('service'));
+        if ($service->business_id != $business->id) {
+            abort(404);
+        }
+
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        return view('services.show', compact('business', 'service'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Service $service)
+    public function edit(Business $business, Service $service)
     {
-        $businesses = Business::all();
-        return view('services.edit', compact('service', 'businesses'));
+        if ($service->business_id != $business->id) {
+            abort(404);
+        }
+
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        return view('services.edit', compact('business', 'service'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Service $service)
+    public function update(Request $request, Business $business, Service $service)
     {
+        if ($service->business_id != $business->id) {
+            abort(404);
+        }
+
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
         $data = $request->validate([
-            'name' => 'required|string|max:100',
-            'description' => 'string|max:255',
-            'duration_minutes' => 'required|integer',
-            'price' => 'required|numeric',
-            'business_id' => 'required|exists:businesses,id',
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string|max:255',
+            'duration_minutes' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0',
         ]);
+
         $service->update($data);
-        return redirect()->route('services.index')->with('success', 'Servicio actualizado');
+
+        return redirect()->route('businesses.services.index', $business)
+            ->with('success', 'Servicio actualizado correctamente');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service $service)
+    public function destroy(Business $business, Service $service)
     {
+        if ($service->business_id != $business->id) {
+            abort(404);
+        }
+
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
         $service->delete();
-        return redirect()->route('services.index')->with('success', 'Servicio eliminado');
+
+        return redirect()->route('businesses.services.index', $business)
+            ->with('success', 'Servicio eliminado correctamente');
     }
 }

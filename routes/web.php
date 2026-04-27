@@ -43,17 +43,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('businesses', BusinessController::class);
 
-    Route::resource('employees', EmployeeController::class);
+    Route::resource('businesses.services', ServiceController::class);
 
-    Route::resource('services', ServiceController::class);
+    Route::resource('businesses.employees', EmployeeController::class);
 
-    Route::get('/businesses/{business}/appointments/create', [AppointmentController::class, 'create'])
-        ->name('appointments.create');
-
-    Route::post('/businesses/{business}/appointments', [AppointmentController::class, 'store'])
-        ->name('appointments.store');
-
-    Route::resource('appointments', AppointmentController::class)->except(['create', 'store']);
+    Route::resource('businesses.appointments', AppointmentController::class);
 
     Route::resource('employees.schedules', ScheduleController::class);
 

@@ -4,7 +4,17 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="{{ route('businesses.index') }}">Ver todos los negocios</a>
+                <a class="nav-link" href="{{ route('businesses.index') }}">
+                    @auth
+                        @if (auth()->user()->role == 'owner')
+                            Mis negocios
+                        @else
+                            Ver todos los negocios
+                        @endif
+                    @else
+                        Ver todos los negocios
+                    @endauth
+                </a>
             </li>
 
             @auth
@@ -12,19 +22,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="{{ route('businesses.create') }}">Crear nuevo negocio</a>
                     </li>
-
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ route('services.index') }}">Ver todos los servicios</a>
-                    </li>
-
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ route('services.create') }}">Crear nuevo servicio</a>
-                    </li>
                 @endif
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ route('appointments.index') }}">Mis citas</a>
-                </li>
 
                 @if (auth()->user()->role == 'client' && auth()->user()->owner_request_status != 'pending')
                     <li class="nav-item active">

@@ -15,86 +15,86 @@
     <div class="container">
         <div class="row">
             @auth
-                @if (auth()->user()->role == 'owner')
-                    <h1>Mis negocios</h1>
-                @else
-                    <h1>Negocios</h1>
-                @endif
+            @if (auth()->user()->role == 'owner')
+            <h1>Mis negocios</h1>
             @else
-                <h1>Negocios</h1>
+            <h1>Negocios</h1>
+            @endif
+            @else
+            <h1>Negocios</h1>
             @endauth
 
             @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
             @endif
 
             @if ($businesses->count() > 0)
-                @foreach ($businesses as $business)
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $business->name }}</h5>
+            @foreach ($businesses as $business)
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $business->name }}</h5>
 
-                            <p class="card-text">
-                                <strong>Dirección:</strong> {{ $business->address }}
-                            </p>
+                    <p class="card-text">
+                        <strong>Dirección:</strong> {{ $business->address }}
+                    </p>
 
-                            <p class="card-text">
-                                <strong>Teléfono:</strong> {{ $business->phone }}
-                            </p>
+                    <p class="card-text">
+                        <strong>Teléfono:</strong> {{ $business->phone }}
+                    </p>
 
-                            <p class="card-text">
-                                <strong>Email:</strong> {{ $business->email }}
-                            </p>
+                    <p class="card-text">
+                        <strong>Email:</strong> {{ $business->email }}
+                    </p>
 
-                            <p class="card-text">
-                                <strong>Descripción:</strong> {{ $business->description }}
-                            </p>
+                    <p class="card-text">
+                        <strong>Descripción:</strong> {{ $business->description }}
+                    </p>
 
-                            <a href="{{ route('businesses.show', $business) }}" class="btn btn-info btn-sm">
-                                Ver
-                            </a>
+                    <a href="{{ route('businesses.show', $business) }}" class="btn btn-info btn-sm">
+                        Ver
+                    </a>
 
-                            @auth
-                                @if (auth()->user()->role == 'client')
-                                    <a href="{{ route('appointments.create', $business) }}" class="btn btn-success btn-sm">
-                                        Pedir cita
-                                    </a>
-                                @endif
+                    @auth
+                    @if (auth()->user()->role == 'client')
+                    <a href="{{ route('businesses.appointments.create', $business) }}" class="btn btn-success btn-sm">
+                        Pedir cita
+                    </a>
+                    @endif
 
-                                @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
-                                    <a href="{{ route('businesses.edit', $business) }}" class="btn btn-warning btn-sm">
-                                        Editar
-                                    </a>
+                    @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
+                    <a href="{{ route('businesses.edit', $business) }}" class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
 
-                                    <form action="{{ route('businesses.destroy', $business) }}" method="post"
-                                        style="display:inline-block;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            Eliminar
-                                        </button>
-                                    </form>
+                    <form action="{{ route('businesses.destroy', $business) }}" method="post"
+                        style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Eliminar
+                        </button>
+                    </form>
 
-                                    <a href="{{ route('employees.index') }}" class="btn btn-primary btn-sm">
-                                        Empleados
-                                    </a>
+                    <a href="{{ route('businesses.employees.index', $business) }}" class="btn btn-primary btn-sm">
+                        Empleados
+                    </a>
 
-                                    <a href="{{ route('services.index') }}" class="btn btn-primary btn-sm">
-                                        Servicios
-                                    </a>
+                    <a href="{{ route('businesses.services.index', $business) }}" class="btn btn-primary btn-sm">
+                        Servicios
+                    </a>
 
-                                    <a href="{{ route('appointments.index') }}" class="btn btn-primary btn-sm">
-                                        Citas
-                                    </a>
-                                @endif
-                            @endauth
-                        </div>
-                    </div>
-                @endforeach
+                    <a href="{{ route('businesses.appointments.index', $business) }}" class="btn btn-primary btn-sm">
+                        Citas
+                    </a>
+                    @endif
+                    @endauth
+                </div>
+            </div>
+            @endforeach
             @else
-                <p>No hay negocios disponibles.</p>
+            <p>No hay negocios disponibles.</p>
             @endif
         </div>
     </div>
