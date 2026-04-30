@@ -5,96 +5,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Negocios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen">
     @include('components.header')
 
-    <div class="container">
-        <div class="row">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="flex flex-col gap-4">
+
             @auth
-            @if (auth()->user()->role == 'owner')
-            <h1>Mis negocios</h1>
+                @if (auth()->user()->role == 'owner')
+                    <h1 class="text-3xl font-bold text-gray-800">Mis negocios</h1>
+                @else
+                    <h1 class="text-3xl font-bold text-gray-800">Negocios</h1>
+                @endif
             @else
-            <h1>Negocios</h1>
-            @endif
-            @else
-            <h1>Negocios</h1>
+                <h1 class="text-3xl font-bold text-gray-800">Negocios</h1>
             @endauth
 
             @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+                <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded">
+                    {{ session('success') }}
+                </div>
             @endif
 
             @if ($businesses->count() > 0)
-            @foreach ($businesses as $business)
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $business->name }}</h5>
+                @foreach ($businesses as $business)
+                    <div class="bg-white rounded-xl shadow-md p-6 flex flex-col gap-3">
 
-                    <p class="card-text">
-                        <strong>Dirección:</strong> {{ $business->address }}
-                    </p>
+                        <h5 class="text-xl font-semibold text-gray-900">{{ $business->name }}</h5>
 
-                    <p class="card-text">
-                        <strong>Teléfono:</strong> {{ $business->phone }}
-                    </p>
+                        <p class="text-gray-600 text-sm">
+                            <span class="font-semibold text-gray-700">Dirección:</span> {{ $business->address }}
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            <span class="font-semibold text-gray-700">Teléfono:</span> {{ $business->phone }}
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            <span class="font-semibold text-gray-700">Email:</span> {{ $business->email }}
+                        </p>
+                        <p class="text-gray-600 text-sm">
+                            <span class="font-semibold text-gray-700">Descripción:</span> {{ $business->description }}
+                        </p>
 
-                    <p class="card-text">
-                        <strong>Email:</strong> {{ $business->email }}
-                    </p>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <a href="{{ route('businesses.show', $business) }}"
+                                class="px-3 py-1.5 text-sm bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition">
+                                Ver
+                            </a>
 
-                    <p class="card-text">
-                        <strong>Descripción:</strong> {{ $business->description }}
-                    </p>
+                            <a href="{{ route('businesses.appointments.create', $business) }}"
+                                class="px-3 py-1.5 text-sm bg-green-500 hover:bg-green-600 text-white rounded-lg transition">
+                                Pedir cita
+                            </a>
 
-                    <a href="{{ route('businesses.show', $business) }}" class="btn btn-info btn-sm">
-                        Ver
-                    </a>
+                            @auth
+                                @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
+                                    <a href="{{ route('businesses.edit', $business) }}"
+                                        class="px-3 py-1.5 text-sm bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg transition">
+                                        Editar
+                                    </a>
 
-                    <a href="{{ route('businesses.appointments.create', $business) }}" class="btn btn-success btn-sm">
-                        Pedir cita
-                    </a>
-                    @auth
-                    @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
-                    <a href="{{ route('businesses.edit', $business) }}" class="btn btn-warning btn-sm">
-                        Editar
-                    </a>
+                                    <form action="{{ route('businesses.destroy', $business) }}" method="post" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="px-3 py-1.5 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
+                                            Eliminar
+                                        </button>
+                                    </form>
 
-                    <form action="{{ route('businesses.destroy', $business) }}" method="post"
-                        style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            Eliminar
-                        </button>
-                    </form>
+                                    <a href="{{ route('businesses.employees.index', $business) }}"
+                                        class="px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
+                                        Empleados
+                                    </a>
 
-                    <a href="{{ route('businesses.employees.index', $business) }}" class="btn btn-primary btn-sm">
-                        Empleados
-                    </a>
+                                    <a href="{{ route('businesses.services.index', $business) }}"
+                                        class="px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
+                                        Servicios
+                                    </a>
 
-                    <a href="{{ route('businesses.services.index', $business) }}" class="btn btn-primary btn-sm">
-                        Servicios
-                    </a>
+                                    <a href="{{ route('businesses.appointments.index', $business) }}"
+                                        class="px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
+                                        Citas
+                                    </a>
+                                @endif
+                            @endauth
+                        </div>
 
-                    <a href="{{ route('businesses.appointments.index', $business) }}" class="btn btn-primary btn-sm">
-                        Citas
-                    </a>
-                    @endif
-                    @endauth
-                </div>
-            </div>
-            @endforeach
+                    </div>
+                @endforeach
             @else
-            <p>No hay negocios disponibles.</p>
+                <p class="text-gray-500 text-center py-8">No hay negocios disponibles.</p>
             @endif
+
         </div>
     </div>
+
 </body>
 
 </html>

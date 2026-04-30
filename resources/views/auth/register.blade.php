@@ -5,61 +5,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen">
     @include('components.header')
 
-    <div class="container">
-        <div class="row">
-            <h1>Crear cuenta</h1>
+    <div class="max-w-md mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Crear cuenta</h1>
+
+        <div class="bg-white rounded-xl shadow-md p-6">
 
             @if ($errors->any())
-                <div class="alert alert-danger">
+                <div class="bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-lg mb-5">
                     Revisa los datos introducidos.
                 </div>
             @endif
 
-            <form action="{{ route('register') }}" method="post">
+            <form action="{{ route('register') }}" method="post" class="flex flex-col gap-5">
                 @csrf
 
-                <div class="form-group">
-                    <label for="name">Nombre</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror"
-                        name="name" id="name" value="{{ old('name') }}">
-                    @error('name')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}"
+                        class="border @error('name') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('name')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="email">Correo electrónico</label>
-                    <input type="email" class="form-control @error('email') is-invalid @enderror"
-                        name="email" id="email" value="{{ old('email') }}">
-                    @error('email')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="email" class="text-sm font-medium text-gray-700">Correo electrónico</label>
+                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                        class="border @error('email') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('email')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" class="form-control @error('password') is-invalid @enderror"
-                        name="password" id="password">
-                    @error('password')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="password" class="text-sm font-medium text-gray-700">Contraseña</label>
+                    <input type="password" name="password" id="password"
+                        class="border @error('password') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('password')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="password_confirmation">Confirmar contraseña</label>
-                    <input type="password" class="form-control"
-                        name="password_confirmation" id="password_confirmation">
+                <div class="flex flex-col gap-1">
+                    <label for="password_confirmation" class="text-sm font-medium text-gray-700">Confirmar contraseña</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation"
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-3">Registrarse</button>
+                <div class="flex items-center justify-center gap-2 mt-2">
+                    <button type="submit"
+                        class="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition">
+                        Registrarse
+                    </button>
+                    <a href="{{ route('login') }}"
+                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition">
+                        Ya tengo cuenta
+                    </a>
+                </div>
 
-                <a href="{{ route('login') }}" class="btn btn-secondary mt-3">
-                    Ya tengo cuenta
-                </a>
             </form>
         </div>
     </div>
+
 </body>
 
 </html>
