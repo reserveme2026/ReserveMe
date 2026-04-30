@@ -34,12 +34,18 @@
                 <div class="form-group">
                     <label for="phone">Teléfono</label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" name="phone" id="phone"
-                        aria-describedby="phone" value="{{ $business->phone }}">
+                        aria-describedby="phone" value="{{ $employee->phone }}">
                     @error('phone')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-            
+
+                <a href="{{ route('businesses.employees.index', $business) }}" class="btn mt-3 btn-secondary">
+                    Volver
+                </a>
+
                 <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+
+
 
             </form>
         </div>
