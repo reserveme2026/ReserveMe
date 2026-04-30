@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlockedTime;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class BlockedTimeController extends Controller
@@ -11,14 +13,16 @@ class BlockedTimeController extends Controller
      */
     public function index(Employee $employee)
     {
-        $user = auth()->user();
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
         $blockedTimes = BlockedTime::where('employee_id', $employee->id)
-            ->orderBy('date')
+            ->orderBy('block_date')
             ->orderBy('start_time')
             ->get();
 
@@ -30,29 +34,34 @@ class BlockedTimeController extends Controller
      */
     public function create(Employee $employee)
     {
-        $user = auth()->user();
-
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
-        return view('blockeTimes.create', compact('employee'));
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        return view('blockedTimes.create', compact('employee'));
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Employee $employee)
     {
-        $user = auth()->user();
-
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+
         $request->validate([
-            'date' => 'required|date',
+            'block_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'reason' => 'nullable|string|max:255',
@@ -60,7 +69,7 @@ class BlockedTimeController extends Controller
 
         BlockedTime::create([
             'employee_id' => $employee->id,
-            'date' => $request->date,
+            'block_date' => $request->block_date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'reason' => $request->reason,
@@ -75,13 +84,15 @@ class BlockedTimeController extends Controller
      */
     public function show(Employee $employee, BlockedTime $blockedTime)
     {
-        $user = auth()->user();
-
         if ($blockedTime->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -92,13 +103,15 @@ class BlockedTimeController extends Controller
      */
     public function edit(Employee $employee, BlockedTime $blockedTime)
     {
-        $user = auth()->user();
-
         if ($blockedTime->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -110,25 +123,28 @@ class BlockedTimeController extends Controller
      */
     public function update(Request $request, Employee $employee, BlockedTime $blockedTime)
     {
-        $user = auth()->user();
-
         if ($blockedTime->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+
         $request->validate([
-            'date' => 'required|date',
+            'block_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'reason' => 'nullable|string|max:255',
         ]);
 
         $blockedTime->update([
-            'date' => $request->date,
+            'block_date' => $request->block_date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'reason' => $request->reason,
@@ -143,13 +159,15 @@ class BlockedTimeController extends Controller
      */
     public function destroy(Employee $employee, BlockedTime $blockedTime)
     {
-        $user = auth()->user();
-
         if ($blockedTime->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 

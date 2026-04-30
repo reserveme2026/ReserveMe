@@ -22,8 +22,8 @@
 
                 <div class="form-group">
                     <label for="date">Fecha</label>
-                    <input type="date" class="form-control @error('date') is-invalid @enderror"
-                        name="date" id="date" value="{{ old('date', $blockedTime->date) }}">
+                    <input type="date" class="form-control @error('block_date') is-invalid @enderror"
+                        name="block_date" id="block_date" value="{{ old('block_date', $blockedTime->block_date) }}">
                     @error('date')<small class="text-danger">{{ $message }}</small>@enderror
                 </div>
 

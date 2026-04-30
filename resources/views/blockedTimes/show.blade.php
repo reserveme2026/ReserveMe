@@ -18,25 +18,10 @@
 
             <div class="card">
                 <div class="card-body">
-                    <p>
-                        <strong>Fecha:</strong>
-                        {{ $blockedTime->date }}
-                    </p>
-
-                    <p>
-                        <strong>Hora inicio:</strong>
-                        {{ $blockedTime->start_time }}
-                    </p>
-
-                    <p>
-                        <strong>Hora fin:</strong>
-                        {{ $blockedTime->end_time }}
-                    </p>
-
-                    <p>
-                        <strong>Motivo:</strong>
-                        {{ $blockedTime->reason }}
-                    </p>
+                    <p><strong>Fecha:</strong> {{ $blockedTime->block_date }}</p>
+                    <p><strong>Hora inicio:</strong> {{ $blockedTime->start_time }}</p>
+                    <p><strong>Hora fin:</strong> {{ $blockedTime->end_time }}</p>
+                    <p><strong>Motivo:</strong> {{ $blockedTime->reason }}</p>
                 </div>
             </div>
 

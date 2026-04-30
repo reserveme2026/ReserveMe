@@ -56,13 +56,10 @@
                         Ver
                     </a>
 
-                    @auth
-                    @if (auth()->user()->role == 'client')
                     <a href="{{ route('businesses.appointments.create', $business) }}" class="btn btn-success btn-sm">
                         Pedir cita
                     </a>
-                    @endif
-
+                    @auth
                     @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
                     <a href="{{ route('businesses.edit', $business) }}" class="btn btn-warning btn-sm">
                         Editar

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloqueos del empleado</title>
+    <title>Bloqueos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -40,7 +40,7 @@
                     <tbody>
                         @foreach ($blockedTimes as $blockedTime)
                             <tr>
-                                <td>{{ $blockedTime->date }}</td>
+                                <td>{{ $blockedTime->block_date }}</td>
                                 <td>{{ $blockedTime->start_time }}</td>
                                 <td>{{ $blockedTime->end_time }}</td>
                                 <td>{{ $blockedTime->reason }}</td>
@@ -72,7 +72,7 @@
                 <p>Este empleado no tiene bloqueos creados.</p>
             @endif
 
-            <a href="{{ route('employees.index') }}" class="btn btn-secondary">
+            <a href="{{ route('businesses.employees.index', $employee->business_id) }}" class="btn btn-secondary">
                 Volver
             </a>
         </div>

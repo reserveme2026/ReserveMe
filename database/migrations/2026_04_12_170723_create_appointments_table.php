@@ -25,8 +25,6 @@ return new class extends Migration {
             $table->foreignId('business_id')->constrained('businesses')->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
-            $table->unique(['employee_id','appointment_date','start_time']);
-
         });
     }
 

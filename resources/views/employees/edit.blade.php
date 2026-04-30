@@ -14,7 +14,7 @@
     <div class="container">
         <div class="row">
             <h1>Empleados</h1>
-            <form action="{{ route('employees.update', $employee) }}" method="post">
+            <form action="{{ route('businesses.employees.update', [$business, $employee]) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
@@ -38,14 +38,7 @@
                     @error('phone')<small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-                <div class="form-group">
-                    <label for="business_id">Negocio</label>
-                    <select class="form-select" name="business_id" id="business_id">
-                        @foreach ($businesses as $business)
-                            <option value="{{ $business->id }}" {{ old('business_id', $employee->business_id) == $business->id ? 'selected' : '' }}>{{ $business->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+            
                 <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
 
             </form>

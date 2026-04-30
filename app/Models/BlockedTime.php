@@ -8,11 +8,10 @@ class BlockedTime extends Model
 {
     protected $fillable = [
         'employee_id',
-        'date',
+        'block_date',
         'start_time',
         'end_time',
         'reason',
-        'type'
     ];
 
     public function employee(){

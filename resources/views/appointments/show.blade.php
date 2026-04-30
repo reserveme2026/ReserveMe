@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle horario</title>
+    <title>Detalle cita</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -14,60 +14,29 @@
 
     <div class="container">
         <div class="row">
-            <h1>Detalle del horario de {{ $employee->name }}</h1>
+            <h1>Detalle de la cita</h1>
 
             <div class="card">
                 <div class="card-body">
-                    <p>
-                        <strong>Día:</strong>
-
-                        @if ($schedule->day_of_week == 0)
-                            Domingo
-                        @endif
-
-                        @if ($schedule->day_of_week == 1)
-                            Lunes
-                        @endif
-
-                        @if ($schedule->day_of_week == 2)
-                            Martes
-                        @endif
-
-                        @if ($schedule->day_of_week == 3)
-                            Miércoles
-                        @endif
-
-                        @if ($schedule->day_of_week == 4)
-                            Jueves
-                        @endif
-
-                        @if ($schedule->day_of_week == 5)
-                            Viernes
-                        @endif
-
-                        @if ($schedule->day_of_week == 6)
-                            Sábado
-                        @endif
-                    </p>
-
-                    <p>
-                        <strong>Hora inicio:</strong>
-                        {{ $schedule->start_time }}
-                    </p>
-
-                    <p>
-                        <strong>Hora fin:</strong>
-                        {{ $schedule->end_time }}
-                    </p>
+                    <p><strong>Negocio:</strong> {{ $business->name }}</p>
+                    <p><strong>Empleado:</strong> {{ $appointment->employee->name }}</p>
+                    <p><strong>Servicio:</strong> {{ $appointment->service_name }}</p>
+                    <p><strong>Fecha:</strong> {{ $appointment->appointment_date }}</p>
+                    <p><strong>Hora inicio:</strong> {{ $appointment->start_time }}</p>
+                    <p><strong>Hora fin:</strong> {{ $appointment->end_time }}</p>
+                    <p><strong>Estado:</strong> {{ $appointment->status }}</p>
+                    <p><strong>Duración:</strong> {{ $appointment->service_duration_minutes }} min</p>
+                    <p><strong>Precio:</strong> {{ $appointment->service_price }} €</p>
+                    <p><strong>Notas:</strong> {{ $appointment->notes }}</p>
                 </div>
             </div>
 
             <div class="mt-3">
-                <a href="{{ route('employees.schedules.edit', [$employee, $schedule]) }}" class="btn btn-warning">
+                <a href="{{ route('businesses.appointments.edit', [$business, $appointment]) }}" class="btn btn-warning">
                     Editar
                 </a>
 
-                <a href="{{ route('employees.schedules.index', $employee) }}" class="btn btn-secondary">
+                <a href="{{ route('businesses.appointments.index', $business) }}" class="btn btn-secondary">
                     Volver
                 </a>
             </div>

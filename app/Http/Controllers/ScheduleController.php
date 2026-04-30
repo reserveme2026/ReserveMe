@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -11,9 +13,11 @@ class ScheduleController extends Controller
      */
     public function index(Employee $employee)
     {
-        $user = auth()->user();
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -30,9 +34,11 @@ class ScheduleController extends Controller
      */
     public function create(Employee $employee)
     {
-        $user = auth()->user();
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -44,24 +50,23 @@ class ScheduleController extends Controller
      */
     public function store(Request $request, Employee $employee)
     {
-        $user = auth()->user();
-
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
-        $request->validate([
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        $schedule = $request->validate([
             'day_of_week' => 'required|integer|min:0|max:6',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
         ]);
 
-        Schedule::create([
-            'employee_id' => $employee->id,
-            'day_of_week' => $request->day_of_week,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-        ]);
+        $schedule['employee_id'] = $employee->id;
+
+        Schedule::create($schedule);
 
         return redirect()->route('employees.schedules.index', $employee)
             ->with('success', 'Horario creado correctamente');
@@ -70,34 +75,37 @@ class ScheduleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Employee $employee, Schedule $schedule)
     {
-        $user = auth()->user();
-
         if ($schedule->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
-        return view('schedules.edit', compact('employee', 'schedule'));
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        return view('schedules.show', compact('employee', 'schedule'));
     }
-    
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Employee $employee, Schedule $schedule)
     {
-        $user = auth()->user();
-
         if ($schedule->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -110,27 +118,25 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Employee $employee, Schedule $schedule)
     {
-        $user = auth()->user();
-
         if ($schedule->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
 
-        $request->validate([
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+            abort(403);
+        }
+
+        $data = $request->validate([
             'day_of_week' => 'required|integer|min:0|max:6',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
         ]);
 
-        $schedule->update([
-            'day_of_week' => $request->day_of_week,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-        ]);
+        $schedule->update($data);
 
         return redirect()->route('employees.schedules.index', $employee)
             ->with('success', 'Horario actualizado correctamente');
@@ -141,13 +147,15 @@ class ScheduleController extends Controller
      */
     public function destroy(Employee $employee, Schedule $schedule)
     {
-        $user = auth()->user();
-
         if ($schedule->employee_id != $employee->id) {
             abort(404);
         }
 
-        if ($user->role != 'admin' && $employee->business->owner_id != $user->id) {
+        if (auth()->user()->role == 'client') {
+            abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 

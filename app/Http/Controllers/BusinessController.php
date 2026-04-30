@@ -46,19 +46,23 @@ class BusinessController extends Controller
      */
     public function store(Request $request)
     {
-        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'client') {
             abort(403);
         }
+
         $business = $request->validate([
-            'name' => 'required|string|max:150',
-            'description' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
             'email' => 'required|email',
         ]);
+
         $business['owner_id'] = auth()->id();
-        Business::create($business);
-        return redirect()->route('businesses.index')->with('success', 'Negocio creado correctamente');
+        $business = Business::create($business);
+
+        return redirect()->route('businesses.index')
+            ->with('success', 'Negocio creado correctamente');
     }
 
     /**

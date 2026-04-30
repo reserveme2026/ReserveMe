@@ -14,12 +14,14 @@ Route::get('/', function () {
     return redirect('/businesses');
 });
 
+Route::get('/businesses', [BusinessController::class, 'index'])->name('businesses.index');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
 
         if ($user->role == 'admin') {
-            return view('dashboard', compact('user'));
+            return redirect()->route('businesses.index');
         }
 
         if ($user->role == 'owner') {
@@ -27,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
         }
 
         if ($user->role == 'client') {
-            return redirect()->route('appointments.index');
+            return redirect()->route('businesses.index');
         }
 
         abort(403);
@@ -41,16 +43,13 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/')->with('success', 'Sesión cerrada correctamente');
     })->name('logout');
 
-    Route::resource('businesses', BusinessController::class);
+    Route::resource('businesses', BusinessController::class)->except(['index']);
 
     Route::resource('businesses.services', ServiceController::class);
-
     Route::resource('businesses.employees', EmployeeController::class);
-
     Route::resource('businesses.appointments', AppointmentController::class);
 
     Route::resource('employees.schedules', ScheduleController::class);
-
     Route::resource('employees.blockedTimes', BlockedTimeController::class);
 
     Route::post('/owner-request', [UserController::class, 'requestOwner'])
@@ -63,4 +62,15 @@ Route::middleware(['auth'])->group(function () {
         ->name('users.rejectOwner');
 
     Route::resource('users', UserController::class);
+
+    Route::patch('/businesses/{business}/appointments/{appointment}/confirm', [AppointmentController::class, 'confirm'])
+        ->name('businesses.appointments.confirm');
+
+    Route::patch('/businesses/{business}/appointments/{appointment}/reject', [AppointmentController::class, 'reject'])
+        ->name('businesses.appointments.reject');
+    Route::patch('/businesses/{business}/appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])
+        ->name('businesses.appointments.cancel');
+
+    Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])
+        ->name('appointments.myAppointments');
 });
