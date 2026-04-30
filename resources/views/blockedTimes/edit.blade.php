@@ -5,57 +5,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar bloqueo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen">
     @include('components.header')
 
-    <div class="container">
-        <div class="row">
-            <h1>Editar bloqueo de {{ $employee->name }}</h1>
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Editar bloqueo de {{ $employee->name }}</h1>
 
-            <form action="{{ route('employees.blockedTimes.update', [$employee, $blockedTime]) }}" method="post">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <form action="{{ route('employees.blockedTimes.update', [$employee, $blockedTime]) }}" method="post" class="flex flex-col gap-5">
                 @csrf
                 @method('PUT')
 
-                <div class="form-group">
-                    <label for="date">Fecha</label>
-                    <input type="date" class="form-control @error('block_date') is-invalid @enderror"
-                        name="block_date" id="block_date" value="{{ old('block_date', $blockedTime->block_date) }}">
-                    @error('date')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="block_date" class="text-sm font-medium text-gray-700">Fecha</label>
+                    <input type="date" name="block_date" id="block_date" value="{{ old('block_date', $blockedTime->block_date) }}"
+                        class="border @error('block_date') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('block_date')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="start_time">Hora inicio</label>
-                    <input type="time" class="form-control @error('start_time') is-invalid @enderror"
-                        name="start_time" id="start_time" value="{{ old('start_time', $blockedTime->start_time) }}">
-                    @error('start_time')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="start_time" class="text-sm font-medium text-gray-700">Hora inicio</label>
+                    <input type="time" name="start_time" id="start_time" value="{{ old('start_time', $blockedTime->start_time) }}"
+                        class="border @error('start_time') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('start_time')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="end_time">Hora fin</label>
-                    <input type="time" class="form-control @error('end_time') is-invalid @enderror"
-                        name="end_time" id="end_time" value="{{ old('end_time', $blockedTime->end_time) }}">
-                    @error('end_time')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="end_time" class="text-sm font-medium text-gray-700">Hora fin</label>
+                    <input type="time" name="end_time" id="end_time" value="{{ old('end_time', $blockedTime->end_time) }}"
+                        class="border @error('end_time') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('end_time')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <div class="form-group">
-                    <label for="reason">Motivo</label>
-                    <input type="text" class="form-control @error('reason') is-invalid @enderror"
-                        name="reason" id="reason" value="{{ old('reason', $blockedTime->reason) }}">
-                    @error('reason')<small class="text-danger">{{ $message }}</small>@enderror
+                <div class="flex flex-col gap-1">
+                    <label for="reason" class="text-sm font-medium text-gray-700">Motivo</label>
+                    <input type="text" name="reason" id="reason" value="{{ old('reason', $blockedTime->reason) }}"
+                        class="border @error('reason') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+                    @error('reason')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
+                <div class="flex items-center justify-center gap-2 mt-2">
+                    <button type="submit"
+                        class="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition">
+                        Actualizar
+                    </button>
+                    <a href="{{ route('employees.blockedTimes.index', $employee) }}"
+                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition">
+                        Volver
+                    </a>
+                </div>
 
-                <a href="{{ route('employees.blockedTimes.index', $employee) }}" class="btn btn-secondary mt-3">
-                    Volver
-                </a>
             </form>
         </div>
     </div>
+
 </body>
 
 </html>
