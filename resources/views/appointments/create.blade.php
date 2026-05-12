@@ -1,96 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear cita</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-violet-50 min-h-screen">
     @include('components.header')
 
-    <div class="container">
-        <div class="row">
-            <h1>Pedir cita en {{ $business->name }}</h1>
+    <div class="max-w-2xl mx-auto px-4 py-10 flex flex-col gap-6">
 
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form action="{{ route('businesses.appointments.store', $business) }}" method="post">
-                @csrf
-
-                <div class="form-group">
-                    <label for="employee_id">Empleado</label>
-                    <select name="employee_id" id="employee_id"
-                        class="form-control @error('employee_id') is-invalid @enderror">
-                        <option value="">Selecciona un empleado</option>
-                        @foreach ($employees as $employee)
-                            <option value="{{ $employee->id }}" @if (old('employee_id') == $employee->id) selected @endif>
-                                {{ $employee->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('employee_id')<small class="text-danger">{{ $message }}</small>@enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="service_id">Servicio</label>
-                    <select name="service_id" id="service_id"
-                        class="form-control @error('service_id') is-invalid @enderror">
-                        <option value="">Selecciona un servicio</option>
-                        @foreach ($services as $service)
-                            <option value="{{ $service->id }}" @if (old('service_id') == $service->id) selected @endif>
-                                {{ $service->name }} - {{ $service->duration_minutes }} min - {{ $service->price }} €
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('service_id')<small class="text-danger">{{ $message }}</small>@enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="appointment_date">Fecha</label>
-                    <input type="date" class="form-control @error('appointment_date') is-invalid @enderror"
-                        name="appointment_date" id="appointment_date" value="{{ old('appointment_date') }}">
-                    @error('appointment_date')<small class="text-danger">{{ $message }}</small>@enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="time">Hora</label>
-                    <input type="time" class="form-control @error('time') is-invalid @enderror"
-                        name="time" id="time" value="{{ old('time') }}" step="900">
-                    @error('time')<small class="text-danger">{{ $message }}</small>@enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="notes">Descripción</label>
-                    <textarea name="notes" id="notes"
-                        class="form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
-                    @error('notes')<small class="text-danger">{{ $message }}</small>@enderror
-                </div>
-
-                <button type="submit" class="btn btn-primary mt-3">Crear cita</button>
-
-                <a href="{{ route('businesses.index') }}" class="btn btn-secondary mt-3">
-                    Volver
-                </a>
-            </form>
+        {{-- Page header --}}
+        <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold text-violet-950">
+                Pedir cita en {{ $business->name }}
+            </h1>
         </div>
+
+        {{-- Alerts --}}
+        @if (session('error'))
+            <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Revisa los datos introducidos.
+            </div>
+        @endif
+
+        {{-- Form card --}}
+        <div class="bg-white border border-violet-100 rounded-2xl shadow-sm overflow-hidden">
+            <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
+            <div class="p-6 flex flex-col gap-5">
+
+                <form action="{{ route('businesses.appointments.store', $business) }}" method="post" class="flex flex-col gap-5">
+                    @csrf
+
+                    {{-- Empleado --}}
+                    <div class="flex flex-col gap-1">
+                        <label for="employee_id" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Empleado</label>
+                        <select name="employee_id" id="employee_id"
+                            class="border @error('employee_id') border-red-300 @else border-violet-200 @enderror bg-violet-50/70 rounded-lg px-3 py-2 text-sm text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
+                            <option value="">Selecciona un empleado</option>
+                            @foreach ($employees as $employee)
+                                <option value="{{ $employee->id }}" @if (old('employee_id') == $employee->id) selected @endif>
+                                    {{ $employee->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('employee_id')
+                            <small class="text-red-500 text-xs">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- Servicio --}}
+                    <div class="flex flex-col gap-1">
+                        <label for="service_id" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Servicio</label>
+                        <select name="service_id" id="service_id"
+                            class="border @error('service_id') border-red-300 @else border-violet-200 @enderror bg-violet-50/70 rounded-lg px-3 py-2 text-sm text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
+                            <option value="">Selecciona un servicio</option>
+                            @foreach ($services as $service)
+                                <option value="{{ $service->id }}" @if (old('service_id') == $service->id) selected @endif>
+                                    {{ $service->name }} — {{ $service->duration_minutes }} min — {{ $service->price }} €
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('service_id')
+                            <small class="text-red-500 text-xs">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- Fecha y hora en fila --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label for="appointment_date" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Fecha</label>
+                            <input type="date" name="appointment_date" id="appointment_date" value="{{ old('appointment_date') }}"
+                                class="border @error('appointment_date') border-red-300 @else border-violet-200 @enderror bg-violet-50/70 rounded-lg px-3 py-2 text-sm text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
+                            @error('appointment_date')
+                                <small class="text-red-500 text-xs">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label for="time" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Hora</label>
+                            <input type="time" name="time" id="time" value="{{ old('time') }}" step="900"
+                                class="border @error('time') border-red-300 @else border-violet-200 @enderror bg-violet-50/70 rounded-lg px-3 py-2 text-sm text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
+                            @error('time')
+                                <small class="text-red-500 text-xs">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- Notas --}}
+                    <div class="flex flex-col gap-1">
+                        <label for="notes" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Notas</label>
+                        <textarea name="notes" id="notes" rows="3"
+                            class="border @error('notes') border-red-300 @else border-violet-200 @enderror bg-violet-50/70 rounded-lg px-3 py-2 text-sm text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-400 transition resize-none">{{ old('notes') }}</textarea>
+                        @error('notes')
+                            <small class="text-red-500 text-xs">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="flex items-center gap-2 pt-1">
+                        <a href="{{ route('businesses.show', $business) }}"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
+                                   border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors duration-150">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
+                            Volver
+                        </a>
+                        <button type="submit"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
+                                   bg-purple-500 hover:bg-purple-600 text-white transition-colors duration-150 shadow-sm">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Crear cita
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
     </div>
 </body>
 

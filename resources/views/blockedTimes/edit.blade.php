@@ -1,73 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar bloqueo</title>
+    <title>Bloqueos de {{ $employee->name }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-violet-50 min-h-screen">
     @include('components.header')
 
-    <div class="max-w-2xl mx-auto px-4 py-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Editar bloqueo de {{ $employee->name }}</h1>
+    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-6">
 
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <form action="{{ route('employees.blockedTimes.update', [$employee, $blockedTime]) }}" method="post" class="flex flex-col gap-5">
-                @csrf
-                @method('PUT')
-
-                <div class="flex flex-col gap-1">
-                    <label for="block_date" class="text-sm font-medium text-gray-700">Fecha</label>
-                    <input type="date" name="block_date" id="block_date" value="{{ old('block_date', $blockedTime->block_date) }}"
-                        class="border @error('block_date') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
-                    @error('block_date')
-                        <small class="text-red-500 text-xs">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="start_time" class="text-sm font-medium text-gray-700">Hora inicio</label>
-                    <input type="time" name="start_time" id="start_time" value="{{ old('start_time', $blockedTime->start_time) }}"
-                        class="border @error('start_time') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
-                    @error('start_time')
-                        <small class="text-red-500 text-xs">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="end_time" class="text-sm font-medium text-gray-700">Hora fin</label>
-                    <input type="time" name="end_time" id="end_time" value="{{ old('end_time', $blockedTime->end_time) }}"
-                        class="border @error('end_time') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
-                    @error('end_time')
-                        <small class="text-red-500 text-xs">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="reason" class="text-sm font-medium text-gray-700">Motivo</label>
-                    <input type="text" name="reason" id="reason" value="{{ old('reason', $blockedTime->reason) }}"
-                        class="border @error('reason') border-red-400 @else border-gray-300 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
-                    @error('reason')
-                        <small class="text-red-500 text-xs">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="flex items-center justify-center gap-2 mt-2">
-                    <button type="submit"
-                        class="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition">
-                        Actualizar
-                    </button>
-                    <a href="{{ route('employees.blockedTimes.index', $employee) }}"
-                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition">
-                        Volver
-                    </a>
-                </div>
-
-            </form>
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+            <h1 class="text-2xl font-bold text-violet-950">
+                Bloqueos de {{ $employee->name }}
+            </h1>
+            <a href="{{ route('employees.blockedTimes.create', $employee) }}"
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
+                       bg-purple-500 hover:bg-purple-600 text-white transition-colors duration-150 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                </svg>
+                Crear bloqueo
+            </a>
         </div>
+
+        @if (session('success'))
+            <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($blockedTimes->count() > 0)
+            <div class="bg-white border border-violet-100 rounded-2xl shadow-sm overflow-hidden">
+                <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead>
+                            <tr class="border-b border-violet-100">
+                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400">Fecha</th>
+                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400">Hora inicio</th>
+                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400">Hora fin</th>
+                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400">Motivo</th>
+                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-violet-50">
+                            @foreach ($blockedTimes as $blockedTime)
+                                <tr class="hover:bg-violet-50/50 transition-colors duration-150">
+                                    <td class="px-4 py-3 text-sm font-medium text-violet-950">{{ $blockedTime->block_date }}</td>
+                                    <td class="px-4 py-3 text-sm text-violet-800">{{ $blockedTime->start_time }}</td>
+                                    <td class="px-4 py-3 text-sm text-violet-800">{{ $blockedTime->end_time }}</td>
+                                    <td class="px-4 py-3 text-sm text-violet-600 max-w-[200px] truncate">{{ $blockedTime->reason }}</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex flex-wrap gap-1">
+                                            <a href="{{ route('employees.blockedTimes.edit', [$employee, $blockedTime]) }}"
+                                                class="px-2 py-1 text-xs font-semibold bg-violet-100 hover:bg-violet-200 text-violet-700 rounded-lg transition-colors duration-150">
+                                                Editar
+                                            </a>
+                                            <form action="{{ route('employees.blockedTimes.destroy', [$employee, $blockedTime]) }}"
+                                                method="post" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="px-2 py-1 text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg transition-colors duration-150">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @else
+            <div class="bg-white border border-violet-100 rounded-2xl shadow-sm px-6 py-10 text-center">
+                <p class="text-sm text-violet-400">No hay bloqueos registrados para este empleado.</p>
+            </div>
+        @endif
+
+        <div>
+            <a href="{{ route('employees.index') }}"
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
+                       border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors duration-150">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
+        </div>
+
     </div>
 
 </body>
