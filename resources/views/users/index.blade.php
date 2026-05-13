@@ -11,7 +11,7 @@
 <body class="bg-gray-100 min-h-screen">
     @include('components.header')
 
-    <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto px-4 py-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-6">Usuarios</h1>
 
         @if (session('success'))
@@ -39,38 +39,75 @@
                             <th class="px-4 py-3">Nombre</th>
                             <th class="px-4 py-3">Email</th>
                             <th class="px-4 py-3">Rol</th>
-                            <th class="px-4 py-3">Solicitud owner</th>
+                            <th class="px-4 py-3">Plan actual</th>
+                            <th class="px-4 py-3">Plan solicitado</th>
+                            <th class="px-4 py-3">Estado solicitud</th>
                             <th class="px-4 py-3">Acciones solicitud</th>
                             <th class="px-4 py-3">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @foreach ($users as $user)
+                            @php
+                                $latestOwnerRequest = $user->ownerRequests->sortByDesc('created_at')->first();
+                                $pendingOwnerRequest = $user->ownerRequests->where('status', 'pending')->first();
+
+                                $statusClasses = 'bg-gray-100 text-gray-500';
+
+                                if ($latestOwnerRequest) {
+                                    if ($latestOwnerRequest->status == 'approved') {
+                                        $statusClasses = 'bg-green-100 text-green-700';
+                                    }
+
+                                    if ($latestOwnerRequest->status == 'rejected') {
+                                        $statusClasses = 'bg-red-100 text-red-700';
+                                    }
+
+                                    if ($latestOwnerRequest->status == 'pending') {
+                                        $statusClasses = 'bg-yellow-100 text-yellow-700';
+                                    }
+                                }
+                            @endphp
+
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-4 py-3 text-gray-700">{{ $user->name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->role }}</td>
-                                <td class="px-4 py-3">
-                                    @php
-                                        $requestClasses = match($user->owner_request_status) {
-                                            'approved' => 'bg-green-100 text-green-700',
-                                            'rejected' => 'bg-red-100 text-red-700',
-                                            'pending'  => 'bg-yellow-100 text-yellow-700',
-                                            default    => 'bg-gray-100 text-gray-500',
-                                        };
-                                    @endphp
-                                    @if ($user->owner_request_status)
-                                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $requestClasses }}">
-                                            {{ $user->owner_request_status }}
+
+                                <td class="px-4 py-3 text-gray-700">
+                                    @if ($user->owner_plan)
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-violet-100 text-violet-700">
+                                            {{ $user->owner_plan }}
                                         </span>
                                     @else
                                         <span class="text-gray-400">—</span>
                                     @endif
                                 </td>
+
+                                <td class="px-4 py-3 text-gray-700">
+                                    @if ($latestOwnerRequest)
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                            {{ $latestOwnerRequest->requested_plan }}
+                                        </span>
+                                    @else
+                                        <span class="text-gray-400">—</span>
+                                    @endif
+                                </td>
+
                                 <td class="px-4 py-3">
-                                    @if ($user->owner_request_status == 'pending')
+                                    @if ($latestOwnerRequest)
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium {{ $statusClasses }}">
+                                            {{ $latestOwnerRequest->status }}
+                                        </span>
+                                    @else
+                                        <span class="text-gray-400">—</span>
+                                    @endif
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    @if ($pendingOwnerRequest)
                                         <div class="flex flex-wrap gap-1">
-                                            <form action="{{ route('users.approveOwner', $user) }}" method="post" class="inline">
+                                            <form action="{{ route('ownerRequests.approve', $pendingOwnerRequest) }}" method="post" class="inline">
                                                 @csrf
                                                 <button type="submit"
                                                     class="px-2 py-1 text-xs bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition">
@@ -78,7 +115,7 @@
                                                 </button>
                                             </form>
 
-                                            <form action="{{ route('users.rejectOwner', $user) }}" method="post" class="inline">
+                                            <form action="{{ route('ownerRequests.reject', $pendingOwnerRequest) }}" method="post" class="inline">
                                                 @csrf
                                                 <button type="submit"
                                                     class="px-2 py-1 text-xs bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition">
@@ -90,9 +127,9 @@
                                         <span class="text-gray-400">—</span>
                                     @endif
                                 </td>
+
                                 <td class="px-4 py-3">
                                     <div class="flex flex-wrap gap-1">
-
                                         <a href="{{ route('users.show', $user) }}"
                                             class="px-2 py-1 text-xs bg-sky-100 hover:bg-sky-200 text-sky-700 rounded-lg transition">
                                             Ver
@@ -111,7 +148,6 @@
                                                 Eliminar
                                             </button>
                                         </form>
-
                                     </div>
                                 </td>
                             </tr>
@@ -122,9 +158,7 @@
         @else
             <p class="text-gray-500">No hay usuarios registrados.</p>
         @endif
-
     </div>
-
 </body>
 
 </html>

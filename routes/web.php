@@ -4,6 +4,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\BlockedTimeController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\OwnerRequestController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
@@ -52,15 +53,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees.schedules', ScheduleController::class);
     Route::resource('employees.blockedTimes', BlockedTimeController::class);
 
-    Route::post('/owner-request', [UserController::class, 'requestOwner'])
-        ->name('users.requestOwner');
-
-    Route::post('/users/{user}/approve-owner', [UserController::class, 'approveOwner'])
-        ->name('users.approveOwner');
-
-    Route::post('/users/{user}/reject-owner', [UserController::class, 'rejectOwner'])
-        ->name('users.rejectOwner');
-
     Route::resource('users', UserController::class);
 
     Route::patch('/businesses/{business}/appointments/{appointment}/confirm', [AppointmentController::class, 'confirm'])
@@ -73,4 +65,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])
         ->name('appointments.myAppointments');
+
+    Route::get('/owner-plans', [OwnerRequestController::class, 'plans'])
+        ->name('ownerRequests.plans');
+
+    Route::post('/owner-requests', [OwnerRequestController::class, 'store'])
+        ->name('ownerRequests.store');
+
+    Route::post('/owner-requests/{ownerRequest}/approve', [OwnerRequestController::class, 'approve'])
+        ->name('ownerRequests.approve');
+
+    Route::post('/owner-requests/{ownerRequest}/reject', [OwnerRequestController::class, 'reject'])
+        ->name('ownerRequests.reject');
+
+    Route::delete('/owner-membership', [OwnerRequestController::class, 'leaveOwner'])
+        ->name('ownerRequests.leaveOwner');
 });

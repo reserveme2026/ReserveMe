@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('client');
-            $table->string('owner_request_status')->nullable();
+            $table->string('owner_plan')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

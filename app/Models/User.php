@@ -18,7 +18,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'owner_request_status'
+        'owner_plan'
     ];
 
     protected $hidden = [
@@ -39,11 +39,46 @@ class User extends Authenticatable
     }
     public function businesses()
     {
-        return $this->hasMany(Business::class);
+        return $this->hasMany(Business::class, 'owner_id');
     }
 
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    public function ownerRequests()
+    {
+        return $this->hasMany(OwnerRequest::class);
+    }
+
+    public function getPlanLimit()
+    {
+        if ($this->owner_plan == 'starter') {
+            return 1;
+        }
+
+        if ($this->owner_plan == 'pro') {
+            return 3;
+        }
+
+        if ($this->owner_plan == 'premium') {
+            return 6;
+        }
+
+        return null;
+    }
+
+    public function canCreateBusiness()
+    {
+        if ($this->role != 'owner') {
+            return false;
+        }
+        
+        if ($this->getPlanLimit() === null) {
+            return false;
+        }
+
+        return $this->businesses()->count() < $this->getPlanLimit();
     }
 }

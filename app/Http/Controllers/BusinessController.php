@@ -34,8 +34,13 @@ class BusinessController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
+        if (auth()->user()->role == 'client') {
             abort(403);
+        }
+
+        if (auth()->user()->role == 'owner' && !auth()->user()->canCreateBusiness()) {
+            return redirect()->route('businesses.index')
+                ->with('error', 'Has alcanzado el límite de negocios de tu plan');
         }
 
         return view('businesses.create');
@@ -50,6 +55,11 @@ class BusinessController extends Controller
             abort(403);
         }
 
+        if (auth()->user()->role == 'owner' && !auth()->user()->canCreateBusiness()) {
+            return redirect()->route('businesses.index')
+                ->with('error', 'Has alcanzado el límite de negocios de tu plan');
+        }
+
         $business = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -59,9 +69,10 @@ class BusinessController extends Controller
         ]);
 
         $business['owner_id'] = auth()->id();
+
         $business = Business::create($business);
 
-        return redirect()->route('businesses.index')
+        return redirect()->route('businesses.show', $business)
             ->with('success', 'Negocio creado correctamente');
     }
 
