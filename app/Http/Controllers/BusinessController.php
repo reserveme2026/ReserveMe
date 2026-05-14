@@ -63,9 +63,9 @@ class BusinessController extends Controller
         $business = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
             'address' => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:businesses,email',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
 
@@ -121,9 +121,9 @@ class BusinessController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
             'address' => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:businesses,email,' . $business->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
 

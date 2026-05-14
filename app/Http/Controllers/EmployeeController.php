@@ -58,7 +58,7 @@ class EmployeeController extends Controller
         $employee = $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:employees,email',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
         ]);
 
         $employee['business_id'] = $business->id;
@@ -129,7 +129,7 @@ class EmployeeController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:employees,email,' . $employee->id,
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
         ]);
 
         $employee->update($data);

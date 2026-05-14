@@ -48,6 +48,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('businesses.services', ServiceController::class);
     Route::resource('businesses.employees', EmployeeController::class);
+    Route::get('/businesses/{business}/appointments/available-times', [AppointmentController::class, 'availableTimes'])
+    ->name('businesses.appointments.availableTimes');
     Route::resource('businesses.appointments', AppointmentController::class);
 
     Route::resource('employees.schedules', ScheduleController::class);

@@ -74,6 +74,11 @@ class AppointmentController extends Controller
         $start = Carbon::parse($request->appointment_date . ' ' . $request->time);
         $end = $start->copy()->addMinutes($service->duration_minutes);
 
+        if ($start->lessThanOrEqualTo(now())) {
+            return back()->withInput()
+                ->with('error', 'No puedes reservar una cita en una fecha u hora pasada');
+        }
+
         if ($this->hasOverlap($employee->id, $request->appointment_date, $start, $end)) {
             return back()->withInput()
                 ->with('error', 'Ese empleado ya tiene una cita en ese horario');
@@ -190,6 +195,11 @@ class AppointmentController extends Controller
 
         $start = Carbon::parse($request->appointment_date . ' ' . $request->time);
         $end = $start->copy()->addMinutes($service->duration_minutes);
+
+        if ($start->lessThanOrEqualTo(now())) {
+            return back()->withInput()
+                ->with('error', 'No puedes guardar una cita en una fecha u hora pasada');
+        }
 
         $overlap = Appointment::where('employee_id', $employee->id)
             ->where('appointment_date', $request->appointment_date)
@@ -388,5 +398,66 @@ class AppointmentController extends Controller
             ->get();
 
         return view('appointments.myAppointments', compact('appointments'));
+    }
+
+    public function availableTimes(Request $request, Business $business)
+    {
+        if (auth()->user()->role != 'client') {
+            abort(403);
+        }
+
+        $data = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'service_id' => 'required|exists:services,id',
+            'appointment_date' => 'required|date',
+        ]);
+
+        $employee = Employee::where('id', $data['employee_id'])
+            ->where('business_id', $business->id)
+            ->firstOrFail();
+
+        $service = Service::where('id', $data['service_id'])
+            ->where('business_id', $business->id)
+            ->firstOrFail();
+
+        $date = Carbon::parse($data['appointment_date']);
+
+        if ($date->lt(today())) {
+            return response()->json([]);
+        }
+
+        $dayOfWeek = $date->dayOfWeek;
+
+        $schedules = Schedule::where('employee_id', $employee->id)
+            ->where('day_of_week', $dayOfWeek)
+            ->orderBy('start_time')
+            ->get();
+
+        $availableTimes = [];
+
+        foreach ($schedules as $schedule) {
+            $slot = Carbon::parse($date->toDateString() . ' ' . $schedule->start_time);
+            $scheduleEnd = Carbon::parse($date->toDateString() . ' ' . $schedule->end_time);
+
+            while ($slot->copy()->addMinutes($service->duration_minutes) <= $scheduleEnd) {
+                $slotEnd = $slot->copy()->addMinutes($service->duration_minutes);
+
+                if (!$this->hasOverlap($employee->id, $date->toDateString(), $slot, $slotEnd)) {
+                    if (!$this->hasBlock($employee, $slot, $slotEnd)) {
+                        if (!$date->isToday()) {
+                            $availableTimes[] = $slot->format('H:i');
+                        }
+
+                        if ($date->isToday() && $slot->greaterThan(now())) {
+                            $availableTimes[] = $slot->format('H:i');
+                        }
+                    }
+                }
+
+                $slot->addMinutes(30);
+            }
+        }
+
+        return response()->json($availableTimes);
     }
 }
