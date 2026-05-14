@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BusinessController extends Controller
 {
@@ -66,7 +66,12 @@ class BusinessController extends Controller
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
             'email' => 'required|email',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
+
+        if ($request->hasFile('image')) {
+            $business['image'] = $request->file('image')->store('businesses', 'public');
+        }
 
         $business['owner_id'] = auth()->id();
 
@@ -118,8 +123,20 @@ class BusinessController extends Controller
             'description' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'required|string|max:255',
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($business->image) {
+                if (Storage::disk('public')->exists($business->image)) {
+                    Storage::disk('public')->delete($business->image);
+                }
+            }
+
+            $data['image'] = $request->file('image')->store('businesses', 'public');
+        }
+
         $business->update($data);
         return redirect()->route('businesses.index')->with('success', 'Negocio actualizado');
     }
@@ -135,6 +152,12 @@ class BusinessController extends Controller
 
         if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
             abort(403);
+        }
+
+        if ($business->image) {
+            if (Storage::disk('public')->exists($business->image)) {
+                Storage::disk('public')->delete($business->image);
+            }
         }
 
         $business->delete();

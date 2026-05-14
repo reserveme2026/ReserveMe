@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('address');
             $table->string('email')->unique();
+            $table->string('image')->nullable();
             $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
         });
     }

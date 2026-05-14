@@ -67,6 +67,16 @@
             <div class="bg-white border border-violet-100 rounded-2xl shadow-sm hover:shadow-lg hover:border-violet-300 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
                 <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
 
+                @if ($business->image)
+                <img src="{{ asset('storage/' . $business->image) }}"
+                    alt="{{ $business->name }}"
+                    class="w-full h-48 object-cover">
+                @else
+                <img src="{{ asset('images/default.png') }}"
+                    alt="Imagen por defecto"
+                    class="w-full h-48 object-cover">
+                @endif
+
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-4">
                         <h2 class="text-lg font-bold text-violet-950">

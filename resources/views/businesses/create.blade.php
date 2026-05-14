@@ -27,7 +27,7 @@
             <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
 
             <div class="p-7">
-                <form action="{{ route('businesses.store') }}" method="post" class="flex flex-col gap-5">
+                <form action="{{ route('businesses.store') }}" method="post" class="flex flex-col gap-5" enctype="multipart/form-data">
                     @csrf
 
                     {{-- Nombre + Teléfono en dos columnas --}}
@@ -44,7 +44,7 @@
                                        focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
                                        focus:bg-white transition">
                             @error('name')
-                                <small class="text-red-500 text-xs">{{ $message }}</small>
+                            <small class="text-red-500 text-xs">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -59,7 +59,7 @@
                                        focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
                                        focus:bg-white transition">
                             @error('phone')
-                                <small class="text-red-500 text-xs">{{ $message }}</small>
+                            <small class="text-red-500 text-xs">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -77,7 +77,7 @@
                                    focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
                                    focus:bg-white transition">
                         @error('description')
-                            <small class="text-red-500 text-xs">{{ $message }}</small>
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
                         @enderror
                     </div>
 
@@ -93,7 +93,7 @@
                                    focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
                                    focus:bg-white transition">
                         @error('address')
-                            <small class="text-red-500 text-xs">{{ $message }}</small>
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
                         @enderror
                     </div>
 
@@ -109,7 +109,20 @@
                                    focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
                                    focus:bg-white transition">
                         @error('email')
-                            <small class="text-red-500 text-xs">{{ $message }}</small>
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label for="image" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">
+                            Foto del negocio
+                        </label>
+
+                        <input type="file" name="image" id="image"
+                            class="border @error('image') border-red-300 @else border-violet-200 @enderror bg-violet-50/70 rounded-lg px-3 py-2 text-sm text-violet-950 focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
+
+                        @error('image')
+                        <small class="text-red-500 text-xs">{{ $message }}</small>
                         @enderror
                     </div>
 
@@ -122,7 +135,7 @@
                             class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
                                    border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors duration-150">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
                             Volver
                         </a>
@@ -130,7 +143,7 @@
                             class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
                                    bg-violet-600 hover:bg-violet-700 text-white transition-colors duration-150 shadow-sm cursor-pointer">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                             </svg>
                             Crear negocio
                         </button>

@@ -12,6 +12,7 @@ class Business extends Model
         'phone',
         'address',
         'email',
+        'image',
         'owner_id'
     ];
 
