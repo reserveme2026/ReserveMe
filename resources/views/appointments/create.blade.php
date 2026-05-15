@@ -181,10 +181,10 @@
             'domingo',
             'lunes',
             'martes',
-            'miércoles',
+            'miercoles',
             'jueves',
             'viernes',
-            'sábado'
+            'sabado'
         ];
 
         function twoNumbers(number) {
@@ -192,7 +192,7 @@
                 return '0' + number;
             }
 
-            return number;
+            return '' + number;
         }
 
         function dateValue(date) {
@@ -213,9 +213,10 @@
             dateOptions.innerHTML = '';
 
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
             for (let i = 0; i < 7; i++) {
-                const date = new Date();
+                const date = new Date(today);
                 date.setDate(today.getDate() + startDay + i);
 
                 const value = dateValue(date);
@@ -240,6 +241,7 @@
 
                 button.addEventListener('click', function() {
                     dateInput.value = value;
+                    clearTimes();
                     showDates();
                     loadTimes();
                 });
@@ -279,17 +281,19 @@
             const serviceId = serviceSelect.value;
             const appointmentDate = dateInput.value;
 
+            clearTimes();
+
             if (!employeeId || !serviceId || !appointmentDate) {
-                clearTimes();
                 return;
             }
 
-            timeOptions.innerHTML = '';
             timeMessage.textContent = 'Cargando horas disponibles...';
 
             fetch("{{ route('businesses.appointments.availableTimes', $business) }}?employee_id=" + employeeId + "&service_id=" + serviceId + "&appointment_date=" + appointmentDate)
-                .then(response => response.json())
-                .then(times => {
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(times) {
                     timeMessage.textContent = '';
 
                     if (times.length == 0) {
@@ -298,28 +302,53 @@
                     }
 
                     showTimes(times);
+                })
+                .catch(function() {
+                    clearTimes();
+                    timeMessage.textContent = 'No se han podido cargar las horas disponibles';
                 });
         }
 
         prevDatesButton.addEventListener('click', function() {
             if (startDay >= 7) {
                 startDay = startDay - 7;
+                dateInput.value = dateValue(new Date(new Date().setDate(new Date().getDate() + startDay)));
                 showDates();
-                clearTimes();
+                loadTimes();
             }
         });
 
         nextDatesButton.addEventListener('click', function() {
             startDay = startDay + 7;
+            dateInput.value = dateValue(new Date(new Date().setDate(new Date().getDate() + startDay)));
             showDates();
-            clearTimes();
+            loadTimes();
         });
 
-        employeeSelect.addEventListener('change', loadTimes);
-        serviceSelect.addEventListener('change', loadTimes);
+        employeeSelect.addEventListener('change', function() {
+            loadTimes();
+        });
+
+        serviceSelect.addEventListener('change', function() {
+            loadTimes();
+        });
 
         if (!dateInput.value) {
-            dateInput.value = dateValue(new Date());
+            const today = new Date();
+            dateInput.value = dateValue(today);
+        } else {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const selectedDate = new Date(dateInput.value);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            const difference = selectedDate.getTime() - today.getTime();
+            const daysDifference = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+            if (daysDifference > 0) {
+                startDay = Math.floor(daysDifference / 7) * 7;
+            }
         }
 
         showDates();
