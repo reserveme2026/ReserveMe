@@ -96,6 +96,17 @@
                             Volver
                         </a>
 
+                        @auth
+                        @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'employee')
+                        <a href="{{ route('businesses.appointments.index', $business) }}"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg bg-violet-100 hover:bg-violet-200 text-violet-700 transition-colors duration-150">
+                            Citas
+                        </a>
+                        @endif
+                        @endauth
+
+                        @auth
+                        @if (auth()->user()->role == 'client')
                         <a href="{{ route('businesses.appointments.create', $business) }}"
                             class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg bg-purple-500 hover:bg-purple-600 text-white transition-colors duration-150 shadow-sm">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -103,6 +114,8 @@
                             </svg>
                             Pedir cita
                         </a>
+                        @endif
+                        @endauth
                     </div>
                 </div>
             </div>

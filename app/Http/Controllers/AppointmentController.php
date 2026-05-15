@@ -26,12 +26,20 @@ class AppointmentController extends Controller
             if ($business->owner_id != $user->id) {
                 abort(403);
             }
-
             $appointments = Appointment::where('business_id', $business->id)->get();
+        } elseif ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee) {
+                abort(403);
+            }
+
+            $appointments = Appointment::where('business_id', $business->id)
+                ->where('employee_id', $employee->id)
+                ->get();
         } else {
-            $appointments = Appointment::where('business_id', $business->id)->get();
+            abort(403);
         }
-
         return view('appointments.index', compact('business', 'appointments'));
     }
 
@@ -121,12 +129,24 @@ class AppointmentController extends Controller
 
         $user = auth()->user();
 
+        if ($user->role == 'admin') {
+            abort(403);
+        }
+
         if ($user->role == 'client' && $appointment->user_id != $user->id) {
             abort(403);
         }
 
         if ($user->role == 'owner' && $business->owner_id != $user->id) {
             abort(403);
+        }
+
+        if ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee || $appointment->employee_id != $employee->id) {
+                abort(403);
+            }
         }
 
         return view('appointments.show', compact('business', 'appointment'));
@@ -140,12 +160,24 @@ class AppointmentController extends Controller
 
         $user = auth()->user();
 
+        if ($user->role == 'admin') {
+            abort(403);
+        }
+
         if ($user->role == 'client' && $appointment->user_id != $user->id) {
             abort(403);
         }
 
         if ($user->role == 'owner' && $business->owner_id != $user->id) {
             abort(403);
+        }
+
+        if ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee || $appointment->employee_id != $employee->id) {
+                abort(403);
+            }
         }
 
         $employees = Employee::where('business_id', $business->id)->get();
@@ -163,12 +195,24 @@ class AppointmentController extends Controller
 
         $user = auth()->user();
 
+        if ($user->role == 'admin') {
+            abort(403);
+        }
+
         if ($user->role == 'client' && $appointment->user_id != $user->id) {
             abort(403);
         }
 
         if ($user->role == 'owner' && $business->owner_id != $user->id) {
             abort(403);
+        }
+
+        if ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee || $appointment->employee_id != $employee->id) {
+                abort(403);
+            }
         }
 
         $rules = [
@@ -179,11 +223,20 @@ class AppointmentController extends Controller
             'notes' => 'nullable|string|max:255',
         ];
 
-        if ($user->role == 'owner' || $user->role == 'admin') {
+        if ($user->role == 'owner') {
             $rules['status'] = 'required|in:pending,confirmed,cancelled';
         }
 
         $request->validate($rules);
+
+        if ($user->role == 'employee') {
+            $loggedEmployee = $this->getLoggedEmployee($business);
+
+            if (!$loggedEmployee || $request->employee_id != $loggedEmployee->id) {
+                return back()->withInput()
+                    ->with('error', 'No puedes cambiar el empleado asignado a la cita');
+            }
+        }
 
         $employee = Employee::where('id', $request->employee_id)
             ->where('business_id', $business->id)
@@ -236,7 +289,7 @@ class AppointmentController extends Controller
             'notes' => $request->notes,
         ];
 
-        if ($user->role == 'owner' || $user->role == 'admin') {
+        if ($user->role == 'owner') {
             $data['status'] = $request->status;
         }
 
@@ -258,11 +311,11 @@ class AppointmentController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role == 'client' && $appointment->user_id != $user->id) {
+        if ($user->role != 'owner') {
             abort(403);
         }
 
-        if ($user->role == 'owner' && $business->owner_id != $user->id) {
+        if ($business->owner_id != $user->id) {
             abort(403);
         }
 
@@ -280,12 +333,20 @@ class AppointmentController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role == 'client') {
+        if ($user->role == 'client' || $user->role == 'admin') {
             abort(403);
         }
 
         if ($user->role == 'owner' && $business->owner_id != $user->id) {
             abort(403);
+        }
+
+        if ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee || $appointment->employee_id != $employee->id) {
+                abort(403);
+            }
         }
 
         $appointment->update([
@@ -304,12 +365,20 @@ class AppointmentController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role == 'client') {
+        if ($user->role == 'client' || $user->role == 'admin') {
             abort(403);
         }
 
         if ($user->role == 'owner' && $business->owner_id != $user->id) {
             abort(403);
+        }
+
+        if ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee || $appointment->employee_id != $employee->id) {
+                abort(403);
+            }
         }
 
         $appointment->update([
@@ -326,8 +395,25 @@ class AppointmentController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role != 'client' || $appointment->user_id != auth()->id()) {
+        $user = auth()->user();
+
+        if ($user->role == 'client') {
+            if ($appointment->user_id != $user->id) {
+                abort(403);
+            }
+        } elseif ($user->role == 'employee') {
+            $employee = $this->getLoggedEmployee($business);
+
+            if (!$employee || $appointment->employee_id != $employee->id) {
+                abort(403);
+            }
+        } else {
             abort(403);
+        }
+
+        if ($user->role == 'employee' && $appointment->status != 'confirmed') {
+            return redirect()->route('businesses.appointments.index', $business)
+                ->with('error', 'Solo puedes cancelar citas confirmadas');
         }
 
         $appointment->update([
@@ -385,6 +471,14 @@ class AppointmentController extends Controller
 
         return false;
     }
+
+    private function getLoggedEmployee(Business $business)
+    {
+        return Employee::where('business_id', $business->id)
+            ->where('email', auth()->user()->email)
+            ->first();
+    }
+
 
     public function myAppointments()
     {

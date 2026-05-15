@@ -141,27 +141,6 @@
                         @enderror
                     </div>
 
-
-                    {{-- Owner select (admin only) --}}
-                    @if (auth()->user()->role == 'admin')
-                    <div class="flex flex-col gap-1.5">
-                        <label for="owner_id" class="text-[10px] font-bold uppercase tracking-widest text-violet-500">
-                            Propietario
-                            <span class="normal-case tracking-normal font-normal text-violet-300 ml-1">— solo admin</span>
-                        </label>
-                        <select name="owner_id" id="owner_id"
-                            class="bg-violet-50/70 border border-violet-100 rounded-xl px-3.5 py-2.5 text-sm text-violet-950
-                                       focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent
-                                       focus:bg-white transition appearance-none cursor-pointer">
-                            @foreach ($users as $user)
-                            <option value="{{ $user->id }}" @if ($user->id == $business->owner_id) selected @endif>
-                                {{ $user->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
-
                     {{-- Divider --}}
                     <div class="border-t border-violet-50 mt-1"></div>
 

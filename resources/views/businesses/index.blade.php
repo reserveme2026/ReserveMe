@@ -15,7 +15,7 @@
 
         <div class="flex items-center gap-3 mb-6 flex-wrap">
             @auth
-            @if (auth()->user()->role == 'owner')
+            @if (auth()->user()->role == 'owner' || auth()->user()->role == 'employee')
             <h1 class="text-2xl font-bold text-violet-950">
                 Mis <span class="text-violet-600">negocios</span>
             </h1>
@@ -59,6 +59,33 @@
             </svg>
             {{ session('error') }}
         </div>
+        @endif
+
+        <form action="{{ route('businesses.index') }}" method="GET" class="mb-5">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" name="search" value="{{ request('search') }}"
+                    placeholder="Buscar por nombre, direccion o descripcion"
+                    class="flex-1 bg-white border border-violet-200 rounded-xl px-3.5 py-2.5 text-sm text-violet-950 placeholder-violet-300 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition">
+
+                <button type="submit"
+                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-violet-600 hover:bg-violet-700 text-white transition-colors duration-150 shadow-sm">
+                    Buscar
+                </button>
+
+                @if (request('search'))
+                <a href="{{ route('businesses.index') }}"
+                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors duration-150">
+                    Limpiar
+                </a>
+                @endif
+            </div>
+        </form>
+
+        @if (request('search'))
+        <p class="text-sm text-violet-500 mb-5">
+            Resultados para
+            <span class="font-semibold text-violet-700">{{ request('search') }}</span>
+        </p>
         @endif
 
         @if ($businesses->count() > 0)
@@ -125,23 +152,25 @@
                             Ver
                         </a>
 
+                        @auth
+                        @if (auth()->user()->role == 'client')
                         <a href="{{ route('businesses.appointments.create', $business) }}"
-                            class="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-semibold rounded-lg bg-purple-500 hover:bg-purple-600 text-white transition-colors duration-150 shadow-sm">
+                            class="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm font-semibold rounded-lg
+                   bg-purple-500 hover:bg-purple-600 text-white transition-colors duration-150 shadow-sm">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             Pedir cita
                         </a>
+                        @endif
+                        @endauth
 
                         @auth
-                        @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
+                        @if (auth()->user()->role == 'owner' && $business->owner_id == auth()->id())
                         <div class="w-px h-5 bg-violet-100 mx-1 self-center"></div>
 
                         <a href="{{ route('businesses.edit', $business) }}"
                             class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors duration-150">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
                             Editar
                         </a>
 
@@ -154,17 +183,22 @@
                             class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg bg-violet-100 hover:bg-violet-200 text-violet-700 transition-colors duration-150">
                             Servicios
                         </a>
+                        @endif
 
+                        @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'employee')
                         <a href="{{ route('businesses.appointments.index', $business) }}"
                             class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg bg-violet-100 hover:bg-violet-200 text-violet-700 transition-colors duration-150">
                             Citas
                         </a>
-
+                        @endif
+                        
+                        @if ((auth()->user()->role == 'owner' && $business->owner_id == auth()->id()) || auth()->user()->role == 'admin')
                         <form action="{{ route('businesses.destroy', $business) }}" method="post" class="inline ml-auto">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
-                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors duration-150 shadow-sm cursor-pointer">
+                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-lg
+                   bg-red-500 hover:bg-red-600 text-white transition-colors duration-150 shadow-sm cursor-pointer">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
@@ -185,10 +219,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
             </div>
+            @if (request('search'))
+            <p class="text-violet-400 text-sm font-medium">No se han encontrado negocios para esa busqueda.</p>
+            @else
             <p class="text-violet-400 text-sm font-medium">No hay negocios disponibles.</p>
+            @endif
         </div>
         @endif
-
     </div>
 </body>
 

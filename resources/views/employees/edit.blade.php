@@ -33,15 +33,6 @@
                     @method('PUT')
 
                     <div class="flex flex-col gap-1">
-                        <label for="name" class="text-sm font-medium text-violet-700">Nombre</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $employee->name) }}"
-                            class="border @error('name') border-red-300 @else border-violet-200 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
-                        @error('name')
-                            <small class="text-red-500 text-xs">{{ $message }}</small>
-                        @enderror
-                    </div>
-
-                    <div class="flex flex-col gap-1">
                         <label for="email" class="text-sm font-medium text-violet-700">Email</label>
                         <input type="email" name="email" id="email" value="{{ old('email', $employee->email) }}"
                             class="border @error('email') border-red-300 @else border-violet-200 @enderror rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 transition">
