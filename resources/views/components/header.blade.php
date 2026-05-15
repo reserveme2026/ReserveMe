@@ -10,7 +10,7 @@
             <a href="{{ route('businesses.index') }}"
                 class="text-sm text-violet-500 hover:text-violet-700 font-medium transition-colors duration-150 whitespace-nowrap">
                 @auth
-                @if (auth()->user()->role == 'owner')
+                @if (auth()->user()->role == 'owner' || auth()->user()->role == 'employee')
                 Mis negocios
                 @else
                 Ver todos los negocios
@@ -40,7 +40,7 @@
             </a>
             @endif
 
-            @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
+            @if (auth()->user()->role == 'owner')
             <a href="{{ route('businesses.create') }}"
                 class="text-sm text-violet-500 hover:text-violet-700 font-medium transition-colors duration-150 whitespace-nowrap">
                 Crear nuevo negocio

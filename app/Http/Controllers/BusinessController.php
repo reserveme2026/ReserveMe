@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,20 +11,34 @@ class BusinessController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Business::query();
+
         if (auth()->check()) {
-            $user = auth()->user();
-            if ($user->role == 'admin') {
-                $businesses = Business::all();
-            } elseif ($user->role == 'owner') {
-                $businesses = Business::where('owner_id', $user->id)->get();
-            } else {
-                $businesses = Business::all();
+            if (auth()->user()->role == 'owner') {
+                $query->where('owner_id', auth()->id());
             }
-        } else {
-            $businesses = Business::all();
+
+            if (auth()->user()->role == 'employee') {
+                $query->whereHas('employees', function ($q) {
+                    $q->where('email', auth()->user()->email);
+                });
+            }
         }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('address', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        $businesses = $query->get();
+
         return view('businesses.index', compact('businesses'));
     }
 
@@ -34,11 +47,11 @@ class BusinessController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && !auth()->user()->canCreateBusiness()) {
+        if (!auth()->user()->canCreateBusiness()) {
             return redirect()->route('businesses.index')
                 ->with('error', 'Has alcanzado el límite de negocios de tu plan');
         }
@@ -51,11 +64,11 @@ class BusinessController extends Controller
      */
     public function store(Request $request)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && !auth()->user()->canCreateBusiness()) {
+        if (!auth()->user()->canCreateBusiness()) {
             return redirect()->route('businesses.index')
                 ->with('error', 'Has alcanzado el límite de negocios de tu plan');
         }
@@ -66,7 +79,7 @@ class BusinessController extends Controller
             'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
             'address' => 'required|string|max:255',
             'email' => 'required|email|unique:businesses,email',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -94,16 +107,15 @@ class BusinessController extends Controller
      */
     public function edit(Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
-        $users = User::where('role', 'owner')->get();
 
-        return view('businesses.edit', compact('business', 'users'));
+        return view('businesses.edit', compact('business'));
     }
 
     /**
@@ -111,34 +123,35 @@ class BusinessController extends Controller
      */
     public function update(Request $request, Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
+
         $data = $request->validate([
             'name' => 'required|string|max:150',
             'description' => 'nullable|string|max:255',
             'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
             'address' => 'required|string|max:255',
             'email' => 'required|email|unique:businesses,email,' . $business->id,
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
-            if ($business->image) {
-                if (Storage::disk('public')->exists($business->image)) {
-                    Storage::disk('public')->delete($business->image);
-                }
+            if ($business->image && Storage::disk('public')->exists($business->image)) {
+                Storage::disk('public')->delete($business->image);
             }
 
             $data['image'] = $request->file('image')->store('businesses', 'public');
         }
 
         $business->update($data);
-        return redirect()->route('businesses.index')->with('success', 'Negocio actualizado');
+
+        return redirect()->route('businesses.index')
+            ->with('success', 'Negocio actualizado');
     }
 
     /**
@@ -146,7 +159,7 @@ class BusinessController extends Controller
      */
     public function destroy(Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner' && auth()->user()->role != 'admin') {
             abort(403);
         }
 
@@ -154,10 +167,8 @@ class BusinessController extends Controller
             abort(403);
         }
 
-        if ($business->image) {
-            if (Storage::disk('public')->exists($business->image)) {
-                Storage::disk('public')->delete($business->image);
-            }
+        if ($business->image && Storage::disk('public')->exists($business->image)) {
+            Storage::disk('public')->delete($business->image);
         }
 
         $business->delete();
