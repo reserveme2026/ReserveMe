@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -8,64 +8,85 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-violet-50 min-h-screen">
     @include('components.header')
 
-    <div class="max-w-lg mx-auto px-4 py-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Detalle usuario</h1>
+    <div class="max-w-2xl mx-auto px-4 py-10 flex flex-col gap-6">
 
-        <div class="bg-white rounded-xl shadow-md p-6 flex flex-col gap-3">
+        {{-- Page header --}}
+        <h1 class="text-2xl font-bold text-violet-950">Detalle usuario</h1>
+
+        {{-- Info card --}}
+        <div class="bg-white border border-violet-100 rounded-2xl shadow-sm overflow-hidden">
+            <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
 
             @php
                 $requestClasses = match($user->owner_request_status) {
-                    'approved' => 'bg-green-100 text-green-700',
-                    'rejected' => 'bg-red-100 text-red-700',
-                    'pending'  => 'bg-yellow-100 text-yellow-700',
-                    default    => 'bg-gray-100 text-gray-500',
+                    'approved' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+                    'rejected' => 'bg-red-50 text-red-700 border border-red-200',
+                    'pending'  => 'bg-amber-50 text-amber-700 border border-amber-200',
+                    default    => 'bg-violet-50 text-violet-400 border border-violet-200',
+                };
+                $requestLabel = match($user->owner_request_status) {
+                    'approved' => 'Aprobada',
+                    'rejected' => 'Rechazada',
+                    'pending'  => 'Pendiente',
+                    default    => '—',
                 };
             @endphp
 
-            <div class="flex items-center gap-2 text-sm">
-                <span class="font-medium text-gray-500 w-36">Nombre</span>
-                <span class="text-gray-800">{{ $user->name }}</span>
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 bg-violet-50/70 border border-violet-100 rounded-xl px-4 py-3.5 m-6">
+                <div class="flex flex-col gap-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Nombre</span>
+                    <span class="text-sm font-medium text-violet-950">{{ $user->name }}</span>
+                </div>
 
-            <div class="flex items-center gap-2 text-sm">
-                <span class="font-medium text-gray-500 w-36">Email</span>
-                <span class="text-gray-800">{{ $user->email }}</span>
-            </div>
+                <div class="flex flex-col gap-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Email</span>
+                    <span class="text-sm font-medium text-violet-950">{{ $user->email }}</span>
+                </div>
 
-            <div class="flex items-center gap-2 text-sm">
-                <span class="font-medium text-gray-500 w-36">Rol</span>
-                <span class="text-gray-800">{{ $user->role }}</span>
-            </div>
-
-            <div class="flex items-center gap-2 text-sm">
-                <span class="font-medium text-gray-500 w-36">Solicitud owner</span>
-                @if ($user->owner_request_status)
-                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $requestClasses }}">
-                        {{ $user->owner_request_status }}
+                <div class="flex flex-col gap-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Rol</span>
+                    <span class="inline-flex w-fit mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-700 border border-violet-200">
+                        {{ $user->role }}
                     </span>
-                @else
-                    <span class="text-gray-400">—</span>
-                @endif
+                </div>
+
+                <div class="flex flex-col gap-0.5">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400">Solicitud owner</span>
+                    @if ($user->owner_request_status)
+                        <span class="inline-flex w-fit mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold {{ $requestClasses }}">
+                            {{ $requestLabel }}
+                        </span>
+                    @else
+                        <span class="text-sm text-violet-300">—</span>
+                    @endif
+                </div>
             </div>
 
-            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
-                <a href="{{ route('users.edit', $user) }}"
-                    class="px-4 py-2 text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium rounded-lg transition">
-                    Editar
-                </a>
-
+            {{-- Actions --}}
+            <div class="flex flex-wrap gap-2 px-6 pb-6">
                 <a href="{{ route('users.index') }}"
-                    class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition">
+                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
+                           border border-violet-200 text-violet-600 hover:bg-violet-50 transition-colors duration-150">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
                     Volver
                 </a>
+                <a href="{{ route('users.edit', $user) }}"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg
+                           bg-purple-500 hover:bg-purple-600 text-white transition-colors duration-150 shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Editar
+                </a>
             </div>
-
         </div>
-    </div>
 
+    </div>
 </body>
 
 </html>

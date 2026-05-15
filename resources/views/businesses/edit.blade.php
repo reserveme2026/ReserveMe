@@ -128,8 +128,8 @@
                     </div>
                     @endif
                     
-                    <div class="flex flex-col gap-1">
-                        <label for="image" class="text-[10px] font-bold uppercase tracking-widest text-violet-400">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="image" class="text-[10px] font-bold uppercase tracking-widest text-violet-500">
                             Foto del negocio
                         </label>
 
