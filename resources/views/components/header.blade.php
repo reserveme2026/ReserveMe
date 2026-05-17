@@ -229,7 +229,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                            class="w-full text-left px-3 py-2 text-sm font-semibold text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                            class="w-full text-left px-3 py-2 text-sm font-semibold text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer">
                             Dejar de ser owner
                         </button>
                     </form>

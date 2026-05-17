@@ -111,7 +111,7 @@
                                 @csrf
                                 <input type="hidden" name="requested_plan" value="starter">
                                 <button type="submit"
-                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-colors duration-150 shadow-sm">
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-colors duration-150 shadow-sm cursor-pointer">
                                     {{ $isOwner ? 'Solicitar cambio a Starter' : 'Solicitar plan Starter' }}
                                 </button>
                             </form>
@@ -172,7 +172,7 @@
                                 @csrf
                                 <input type="hidden" name="requested_plan" value="pro">
                                 <button type="submit"
-                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-violet-500 hover:bg-violet-600 text-white transition-colors duration-150 shadow-sm">
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-violet-500 hover:bg-violet-600 text-white transition-colors duration-150 shadow-sm cursor-pointer">
                                     {{ $isOwner ? 'Solicitar cambio a Pro' : 'Solicitar plan Pro' }}
                                 </button>
                             </form>
@@ -233,7 +233,7 @@
                                 @csrf
                                 <input type="hidden" name="requested_plan" value="premium">
                                 <button type="submit"
-                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors duration-150 shadow-sm">
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors duration-150 shadow-sm cursor-pointer">
                                     {{ $isOwner ? 'Solicitar cambio a Premium' : 'Solicitar plan Premium' }}
                                 </button>
                             </form>
