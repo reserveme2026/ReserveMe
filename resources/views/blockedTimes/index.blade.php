@@ -35,53 +35,92 @@
         @endif
 
         @if ($blockedTimes->count() > 0)
-            <div class="bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
+
+            {{-- TABLA: lg+ --}}
+            <div class="hidden lg:block bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
                 <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead>
-                            <tr class="border-b border-violet-100 dark:border-gray-700">
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Fecha</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora inicio</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora fin</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Motivo</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Acciones</th>
+                <table class="w-full text-sm text-left">
+                    <thead>
+                        <tr class="border-b border-violet-100 dark:border-gray-700">
+                            <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Fecha</th>
+                            <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora inicio</th>
+                            <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora fin</th>
+                            <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Motivo</th>
+                            <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-violet-50 dark:divide-gray-700">
+                        @foreach ($blockedTimes as $blockedTime)
+                            <tr class="hover:bg-violet-50/50 dark:hover:bg-gray-700/50 transition-colors duration-150">
+                                <td class="px-4 py-3 text-sm font-medium text-violet-950 dark:text-gray-100">{{ $blockedTime->block_date }}</td>
+                                <td class="px-4 py-3 text-sm text-violet-800 dark:text-gray-300">{{ $blockedTime->start_time }}</td>
+                                <td class="px-4 py-3 text-sm text-violet-800 dark:text-gray-300">{{ $blockedTime->end_time }}</td>
+                                <td class="px-4 py-3 text-sm text-violet-600 dark:text-violet-400 max-w-[200px] truncate">{{ $blockedTime->reason }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex flex-wrap gap-1">
+                                        <a href="{{ route('employees.blockedTimes.show', [$employee, $blockedTime]) }}"
+                                            class="px-2 py-1 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">Ver</a>
+                                        <a href="{{ route('employees.blockedTimes.edit', [$employee, $blockedTime]) }}"
+                                            class="px-2 py-1 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">Editar</a>
+                                        <form action="{{ route('employees.blockedTimes.destroy', [$employee, $blockedTime]) }}" method="post" class="inline">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="px-2 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg transition-colors duration-150">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="divide-y divide-violet-50 dark:divide-gray-700">
-                            @foreach ($blockedTimes as $blockedTime)
-                                <tr class="hover:bg-violet-50/50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-                                    <td class="px-4 py-3 text-sm font-medium text-violet-950 dark:text-gray-100">{{ $blockedTime->block_date }}</td>
-                                    <td class="px-4 py-3 text-sm text-violet-800 dark:text-gray-300">{{ $blockedTime->start_time }}</td>
-                                    <td class="px-4 py-3 text-sm text-violet-800 dark:text-gray-300">{{ $blockedTime->end_time }}</td>
-                                    <td class="px-4 py-3 text-sm text-violet-600 dark:text-violet-400 max-w-[200px] truncate">{{ $blockedTime->reason }}</td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex flex-wrap gap-1">
-                                            <a href="{{ route('employees.blockedTimes.show', [$employee, $blockedTime]) }}"
-                                                class="px-2 py-1 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">
-                                                Ver
-                                            </a>
-                                            <a href="{{ route('employees.blockedTimes.edit', [$employee, $blockedTime]) }}"
-                                                class="px-2 py-1 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">
-                                                Editar
-                                            </a>
-                                            <form action="{{ route('employees.blockedTimes.destroy', [$employee, $blockedTime]) }}"
-                                                method="post" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="px-2 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg transition-colors duration-150">
-                                                    Eliminar
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
+
+            {{-- TARJETAS: móvil/tablet (< lg) --}}
+            <div class="lg:hidden flex flex-col gap-4">
+                @foreach ($blockedTimes as $blockedTime)
+                    <div class="bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
+                        <div class="p-4 flex flex-col gap-3">
+
+                            {{-- Cabecera --}}
+                            <div>
+                                <p class="text-base font-bold text-violet-950 dark:text-gray-100">{{ $blockedTime->block_date }}</p>
+                            </div>
+
+                            {{-- Detalles --}}
+                            <div class="grid grid-cols-2 gap-y-2 text-sm">
+                                <div>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora inicio</span>
+                                    <p class="text-violet-800 dark:text-gray-300">{{ $blockedTime->start_time }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora fin</span>
+                                    <p class="text-violet-800 dark:text-gray-300">{{ $blockedTime->end_time }}</p>
+                                </div>
+                                @if ($blockedTime->reason)
+                                <div class="col-span-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Motivo</span>
+                                    <p class="text-violet-800 dark:text-gray-300">{{ $blockedTime->reason }}</p>
+                                </div>
+                                @endif
+                            </div>
+
+                            {{-- Acciones --}}
+                            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-violet-50 dark:border-gray-700">
+                                <a href="{{ route('employees.blockedTimes.show', [$employee, $blockedTime]) }}"
+                                    class="text-center px-3 py-1.5 text-sm font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">Ver</a>
+                                <a href="{{ route('employees.blockedTimes.edit', [$employee, $blockedTime]) }}"
+                                    class="text-center px-3 py-1.5 text-sm font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">Editar</a>
+                                <form action="{{ route('employees.blockedTimes.destroy', [$employee, $blockedTime]) }}" method="post" class="col-span-2">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="w-full px-3 py-1.5 text-sm font-semibold bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg transition-colors duration-150">Eliminar</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
         @else
             <div class="bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm px-6 py-10 text-center">
                 <p class="text-sm text-violet-400 dark:text-violet-500">Este empleado no tiene bloqueos creados.</p>
