@@ -1,16 +1,14 @@
 <nav
     class="bg-white dark:bg-gray-800 border-b border-violet-100 dark:border-gray-700 shadow-sm mb-6 transition-colors duration-200">
 
-    {{-- Barra principal --}}
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-        {{-- Logo --}}
         <a href="{{ route('businesses.index') }}"
-            class="text-xl font-bold text-violet-700 dark:text-violet-400 hover:text-violet-900 dark:hover:text-violet-300 transition-colors duration-150 shrink-0">
+            class="flex items-center gap-2 text-xl font-bold text-violet-700 dark:text-violet-400 hover:text-violet-900 dark:hover:text-violet-300 transition-colors duration-150 shrink-0">
+            <img src="{{ asset('favicon.svg') }}" alt="ReservMe" class="w-7 h-7">
             ReservMe
         </a>
 
-        {{-- Links desktop --}}
         <div class="hidden md:flex items-center gap-4 flex-1">
             <a href="{{ route('businesses.index') }}"
                 class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
@@ -57,16 +55,15 @@
             @endauth
         </div>
 
-        {{-- Acciones desktop --}}
         <div class="hidden md:flex items-center gap-2 shrink-0">
             @auth
                 @php
-                    $roleLabel = match(auth()->user()->role) {
-                        'owner'    => 'propietario',
-                        'employee' => 'empleado',
-                        'client'   => 'cliente',
-                        'admin'    => 'administrador',
-                        default    => auth()->user()->role,
+                    $roleLabel = match (auth()->user()->role) {
+                        'owner' => 'Propietario',
+                        'employee' => 'Empleado',
+                        'client' => 'Cliente',
+                        'admin' => 'Administrador',
+                        default => auth()->user()->role,
                     };
                 @endphp
 
@@ -104,8 +101,7 @@
                 </a>
             @endauth
 
-            {{-- Toggle dark desktop --}}
-            <button onclick="toggleDark()" id="dark-toggle"
+            <button id="dark-toggle"
                 class="relative flex items-center w-14 h-7 rounded-full bg-violet-200 dark:bg-violet-700 transition-colors duration-300 cursor-pointer shrink-0"
                 aria-label="Cambiar modo oscuro">
                 <span id="toggle-thumb"
@@ -124,10 +120,8 @@
             </button>
         </div>
 
-        {{-- Botones móvil: dark toggle + hamburger --}}
         <div class="flex md:hidden items-center gap-2">
-            {{-- Toggle dark móvil --}}
-            <button onclick="toggleDark()" id="dark-toggle-mobile"
+            <button id="dark-toggle-mobile"
                 class="relative flex items-center w-12 h-6 rounded-full bg-violet-200 dark:bg-violet-700 transition-colors duration-300 cursor-pointer shrink-0"
                 aria-label="Cambiar modo oscuro">
                 <span id="toggle-thumb-mobile"
@@ -145,14 +139,15 @@
                 </span>
             </button>
 
-            {{-- Hamburger --}}
-            <button onclick="toggleMenu()" id="hamburger"
+            <button id="hamburger"
                 class="p-2 rounded-lg text-violet-500 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150"
                 aria-label="Abrir menú">
-                <svg id="icon-menu" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg id="icon-menu" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-                <svg id="icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg id="icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
@@ -160,8 +155,8 @@
 
     </div>
 
-    {{-- Menú móvil colapsable --}}
-    <div id="mobile-menu" class="hidden md:hidden border-t border-violet-100 dark:border-gray-700">
+    <div id="mobile-menu"
+        class="md:hidden border-t border-violet-100 dark:border-gray-700 overflow-hidden transition-all duration-300 ease-in-out max-h-0">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
 
             <a href="{{ route('businesses.index') }}"
@@ -179,12 +174,12 @@
 
             @auth
                 @php
-                    $roleLabel = match(auth()->user()->role) {
-                        'owner'    => 'Propietario',
+                    $roleLabel = match (auth()->user()->role) {
+                        'owner' => 'Propietario',
                         'employee' => 'Empleado',
-                        'client'   => 'Cliente',
-                        'admin'    => 'Administrador',
-                        default    => auth()->user()->role,
+                        'client' => 'Cliente',
+                        'admin' => 'Administrador',
+                        default => auth()->user()->role,
                     };
                 @endphp
 
@@ -259,40 +254,47 @@
 </nav>
 
 <script>
-    const html = document.documentElement;
+    (function () {
+        const html = document.documentElement;
 
-    const iconLight       = document.getElementById('icon-light');
-    const iconDark        = document.getElementById('icon-dark');
-    const iconLightMobile = document.getElementById('icon-light-mobile');
-    const iconDarkMobile  = document.getElementById('icon-dark-mobile');
+        // Aplica el tema inmediatamente (antes de que cargue el resto)
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') html.classList.add('dark');
 
-    function applyTheme(isDark) {
-        isDark ? html.classList.add('dark') : html.classList.remove('dark');
-        iconLight?.classList.toggle('hidden', isDark);
-        iconDark?.classList.toggle('hidden', !isDark);
-        iconLightMobile?.classList.toggle('hidden', isDark);
-        iconDarkMobile?.classList.toggle('hidden', !isDark);
-    }
+        function syncIcons() {
+            const isDark = html.classList.contains('dark');
+            const ids = ['icon-light', 'icon-dark', 'icon-light-mobile', 'icon-dark-mobile'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (id.includes('light')) el.classList.toggle('hidden', isDark);
+                if (id.includes('dark'))  el.classList.toggle('hidden', !isDark);
+            });
+        }
 
-    applyTheme(localStorage.getItem('theme') === 'dark');
+        function toggleDark() {
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            syncIcons();
+        }
 
-    function toggleDark() {
-        const isDark = html.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        iconLight?.classList.toggle('hidden', isDark);
-        iconDark?.classList.toggle('hidden', !isDark);
-        iconLightMobile?.classList.toggle('hidden', isDark);
-        iconDarkMobile?.classList.toggle('hidden', !isDark);
-    }
+        function toggleMenu() {
+            const menu     = document.getElementById('mobile-menu');
+            const iconMenu  = document.getElementById('icon-menu');
+            const iconClose = document.getElementById('icon-close');
+            if (!menu) return;
+            const isOpen = menu.style.maxHeight && menu.style.maxHeight !== '0px';
+            menu.style.maxHeight = isOpen ? '0px' : menu.scrollHeight + 'px';
+            iconMenu?.classList.toggle('hidden', !isOpen);
+            iconClose?.classList.toggle('hidden', isOpen);
+        }
 
-    function toggleMenu() {
-        const menu      = document.getElementById('mobile-menu');
-        const iconMenu  = document.getElementById('icon-menu');
-        const iconClose = document.getElementById('icon-close');
-        const isOpen    = !menu.classList.contains('hidden');
+        document.addEventListener('DOMContentLoaded', function () {
+            syncIcons();
 
-        menu.classList.toggle('hidden', isOpen);
-        iconMenu.classList.toggle('hidden', !isOpen);
-        iconClose.classList.toggle('hidden', isOpen);
-    }
+            document.getElementById('dark-toggle')?.addEventListener('click', toggleDark);
+            document.getElementById('dark-toggle-mobile')?.addEventListener('click', toggleDark);
+            document.getElementById('hamburger')?.addEventListener('click', toggleMenu);
+        });
+    })();
 </script>
