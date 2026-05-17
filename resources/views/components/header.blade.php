@@ -13,92 +13,92 @@
             <a href="{{ route('businesses.index') }}"
                 class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
                 @auth
-                    @if (auth()->user()->role == 'owner' || auth()->user()->role == 'employee')
-                        Mis negocios
-                    @else
-                        Ver todos los negocios
-                    @endif
+                @if (auth()->user()->role == 'owner' || auth()->user()->role == 'employee')
+                Mis negocios
                 @else
-                    Ver todos los negocios
+                Ver todos los negocios
+                @endif
+                @else
+                Ver todos los negocios
                 @endauth
             </a>
 
             @auth
-                @if (auth()->user()->role == 'client')
-                    <a href="{{ route('appointments.myAppointments') }}"
-                        class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
-                        Mis citas
-                    </a>
-                    <a href="{{ route('ownerRequests.plans') }}"
-                        class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
-                        Hazte owner
-                    </a>
-                @endif
+            @if (auth()->user()->role == 'client')
+            <a href="{{ route('appointments.myAppointments') }}"
+                class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
+                Mis citas
+            </a>
+            <a href="{{ route('ownerRequests.plans') }}"
+                class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
+                Hazte owner
+            </a>
+            @endif
 
-                @if (auth()->user()->role == 'owner')
-                    <a href="{{ route('ownerRequests.plans') }}"
-                        class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
-                        Actualizar plan
-                    </a>
-                    <a href="{{ route('businesses.create') }}"
-                        class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
-                        Crear nuevo negocio
-                    </a>
-                @endif
+            @if (auth()->user()->role == 'owner')
+            <a href="{{ route('ownerRequests.plans') }}"
+                class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
+                Actualizar plan
+            </a>
+            <a href="{{ route('businesses.create') }}"
+                class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
+                Crear nuevo negocio
+            </a>
+            @endif
 
-                @if (auth()->user()->role == 'admin')
-                    <a href="{{ route('users.index') }}"
-                        class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
-                        Usuarios
-                    </a>
-                @endif
+            @if (auth()->user()->role == 'admin')
+            <a href="{{ route('users.index') }}"
+                class="text-sm text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium transition-colors duration-150 whitespace-nowrap">
+                Usuarios
+            </a>
+            @endif
             @endauth
         </div>
 
         <div class="hidden md:flex items-center gap-2 shrink-0">
             @auth
-                @php
-                    $roleLabel = match (auth()->user()->role) {
-                        'owner' => 'Propietario',
-                        'employee' => 'Empleado',
-                        'client' => 'Cliente',
-                        'admin' => 'Administrador',
-                        default => auth()->user()->role,
-                    };
-                @endphp
+            @php
+            $roleLabel = match (auth()->user()->role) {
+            'owner' => 'Propietario',
+            'employee' => 'Empleado',
+            'client' => 'Cliente',
+            'admin' => 'Administrador',
+            default => auth()->user()->role,
+            };
+            @endphp
 
-                @if (auth()->user()->role == 'owner')
-                    <form action="{{ route('ownerRequests.leaveOwner') }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="px-3 py-1.5 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap">
-                            Dejar de ser owner
-                        </button>
-                    </form>
-                @endif
+            @if (auth()->user()->role == 'owner')
+            <form action="{{ route('ownerRequests.leaveOwner') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres dejar de ser propietario?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                    class="w-full text-left px-3 py-2 text-sm font-semibold text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer">
+                    Dejar de ser propietario
+                </button>
+            </form>
+            @endif
 
-                <span class="text-xs text-violet-400 dark:text-violet-500 whitespace-nowrap">
-                    {{ auth()->user()->name }}
-                    <span class="text-violet-300 dark:text-violet-600">({{ $roleLabel }})</span>
-                </span>
+            <span class="text-xs text-violet-400 dark:text-violet-500 whitespace-nowrap">
+                {{ auth()->user()->name }}
+                <span class="text-violet-300 dark:text-violet-600">({{ $roleLabel }})</span>
+            </span>
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="px-3 py-1.5 text-xs font-semibold bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-600 text-white rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap cursor-pointer">
-                        Cerrar sesión
-                    </button>
-                </form>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="px-3 py-1.5 text-xs font-semibold bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-600 text-white rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap cursor-pointer">
+                    Cerrar sesión
+                </button>
+            </form>
             @else
-                <a href="{{ route('login') }}"
-                    class="px-3 py-1.5 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap">
-                    Iniciar sesión
-                </a>
-                <a href="{{ route('register') }}"
-                    class="px-3 py-1.5 text-xs font-semibold bg-purple-500 hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap">
-                    Registrarse
-                </a>
+            <a href="{{ route('login') }}"
+                class="px-3 py-1.5 text-xs font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap">
+                Iniciar sesión
+            </a>
+            <a href="{{ route('register') }}"
+                class="px-3 py-1.5 text-xs font-semibold bg-purple-500 hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-lg transition-colors duration-150 shadow-sm whitespace-nowrap">
+                Registrarse
+            </a>
             @endauth
 
             <button id="dark-toggle"
@@ -162,91 +162,91 @@
             <a href="{{ route('businesses.index') }}"
                 class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
                 @auth
-                    @if (auth()->user()->role == 'owner' || auth()->user()->role == 'employee')
-                        Mis negocios
-                    @else
-                        Ver todos los negocios
-                    @endif
+                @if (auth()->user()->role == 'owner' || auth()->user()->role == 'employee')
+                Mis negocios
                 @else
-                    Ver todos los negocios
+                Ver todos los negocios
+                @endif
+                @else
+                Ver todos los negocios
                 @endauth
             </a>
 
             @auth
-                @php
-                    $roleLabel = match (auth()->user()->role) {
-                        'owner' => 'Propietario',
-                        'employee' => 'Empleado',
-                        'client' => 'Cliente',
-                        'admin' => 'Administrador',
-                        default => auth()->user()->role,
-                    };
-                @endphp
+            @php
+            $roleLabel = match (auth()->user()->role) {
+            'owner' => 'Propietario',
+            'employee' => 'Empleado',
+            'client' => 'Cliente',
+            'admin' => 'Administrador',
+            default => auth()->user()->role,
+            };
+            @endphp
 
-                @if (auth()->user()->role == 'client')
-                    <a href="{{ route('appointments.myAppointments') }}"
-                        class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
-                        Mis citas
-                    </a>
-                    <a href="{{ route('ownerRequests.plans') }}"
-                        class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
-                        Hazte owner
-                    </a>
-                @endif
+            @if (auth()->user()->role == 'client')
+            <a href="{{ route('appointments.myAppointments') }}"
+                class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                Mis citas
+            </a>
+            <a href="{{ route('ownerRequests.plans') }}"
+                class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                Hazte owner
+            </a>
+            @endif
 
-                @if (auth()->user()->role == 'owner')
-                    <a href="{{ route('ownerRequests.plans') }}"
-                        class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
-                        Actualizar plan
-                    </a>
-                    <a href="{{ route('businesses.create') }}"
-                        class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
-                        Crear nuevo negocio
-                    </a>
-                @endif
+            @if (auth()->user()->role == 'owner')
+            <a href="{{ route('ownerRequests.plans') }}"
+                class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                Actualizar plan
+            </a>
+            <a href="{{ route('businesses.create') }}"
+                class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                Crear nuevo negocio
+            </a>
+            @endif
 
-                @if (auth()->user()->role == 'admin')
-                    <a href="{{ route('users.index') }}"
-                        class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
-                        Usuarios
-                    </a>
-                @endif
+            @if (auth()->user()->role == 'admin')
+            <a href="{{ route('users.index') }}"
+                class="px-3 py-2 text-sm text-violet-700 dark:text-violet-300 font-medium rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                Usuarios
+            </a>
+            @endif
 
-                <div class="border-t border-violet-100 dark:border-gray-700 my-1"></div>
+            <div class="border-t border-violet-100 dark:border-gray-700 my-1"></div>
 
-                <div class="px-3 py-2 text-xs text-violet-400 dark:text-violet-500">
-                    {{ auth()->user()->name }}
-                    <span class="text-violet-300 dark:text-violet-600">({{ $roleLabel }})</span>
-                </div>
+            <div class="px-3 py-2 text-xs text-violet-400 dark:text-violet-500">
+                {{ auth()->user()->name }}
+                <span class="text-violet-300 dark:text-violet-600">({{ $roleLabel }})</span>
+            </div>
 
-                @if (auth()->user()->role == 'owner')
-                    <form action="{{ route('ownerRequests.leaveOwner') }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="w-full text-left px-3 py-2 text-sm font-semibold text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer">
-                            Dejar de ser owner
-                        </button>
-                    </form>
-                @endif
+            @if (auth()->user()->role == 'owner')
+            <form action="{{ route('ownerRequests.leaveOwner') }}" method="POST" onsubmit="return confirm('¿Seguro que quieres dejar de ser propietario?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                    class="w-full text-left px-3 py-2 text-sm font-semibold text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer">
+                    Dejar de ser propietario
+                </button>
+            </form>
+            @endif
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="w-full text-left px-3 py-2 text-sm font-semibold text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition-colors duration-150 cursor-pointer">
-                        Cerrar sesión
-                    </button>
-                </form>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="w-full text-left px-3 py-2 text-sm font-semibold text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition-colors duration-150 cursor-pointer">
+                    Cerrar sesión
+                </button>
+            </form>
             @else
-                <div class="border-t border-violet-100 dark:border-gray-700 my-1"></div>
-                <a href="{{ route('login') }}"
-                    class="mx-3 my-1 px-3 py-2 text-sm font-semibold text-center bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">
-                    Iniciar sesión
-                </a>
-                <a href="{{ route('register') }}"
-                    class="mx-3 my-1 px-3 py-2 text-sm font-semibold text-center bg-purple-500 hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-lg transition-colors duration-150">
-                    Registrarse
-                </a>
+            <div class="border-t border-violet-100 dark:border-gray-700 my-1"></div>
+            <a href="{{ route('login') }}"
+                class="mx-3 my-1 px-3 py-2 text-sm font-semibold text-center bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">
+                Iniciar sesión
+            </a>
+            <a href="{{ route('register') }}"
+                class="mx-3 my-1 px-3 py-2 text-sm font-semibold text-center bg-purple-500 hover:bg-purple-600 dark:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-lg transition-colors duration-150">
+                Registrarse
+            </a>
             @endauth
 
         </div>
@@ -254,7 +254,7 @@
 </nav>
 
 <script>
-    (function () {
+    (function() {
         const html = document.documentElement;
 
         // Aplica el tema inmediatamente (antes de que cargue el resto)
@@ -268,7 +268,7 @@
                 const el = document.getElementById(id);
                 if (!el) return;
                 if (id.includes('light')) el.classList.toggle('hidden', isDark);
-                if (id.includes('dark'))  el.classList.toggle('hidden', !isDark);
+                if (id.includes('dark')) el.classList.toggle('hidden', !isDark);
             });
         }
 
@@ -279,8 +279,8 @@
         }
 
         function toggleMenu() {
-            const menu     = document.getElementById('mobile-menu');
-            const iconMenu  = document.getElementById('icon-menu');
+            const menu = document.getElementById('mobile-menu');
+            const iconMenu = document.getElementById('icon-menu');
             const iconClose = document.getElementById('icon-close');
             if (!menu) return;
             const isOpen = menu.style.maxHeight && menu.style.maxHeight !== '0px';
@@ -289,7 +289,7 @@
             iconClose?.classList.toggle('hidden', isOpen);
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             syncIcons();
 
             document.getElementById('dark-toggle')?.addEventListener('click', toggleDark);

@@ -3,24 +3,23 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         Fortify::loginView(function () {
             return view('auth.login');
         });
@@ -30,6 +29,5 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Fortify::createUsersUsing(CreateNewUser::class);
-    
     }
 }
