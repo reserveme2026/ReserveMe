@@ -68,7 +68,7 @@
                     class="flex-1 bg-white dark:bg-gray-700 border border-violet-200 dark:border-gray-600 rounded-xl px-3.5 py-2.5 text-sm text-violet-950 dark:text-gray-100 placeholder-violet-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent dark:focus:bg-gray-600 transition">
 
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-violet-600 hover:bg-violet-700 dark:bg-violet-700 dark:hover:bg-violet-600 text-white transition-colors duration-150 shadow-sm">
+                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-xl bg-violet-600 hover:bg-violet-700 dark:bg-violet-700 dark:hover:bg-violet-600 text-white transition-colors duration-150 shadow-sm cursor-pointer">
                     Buscar
                 </button>
 

@@ -87,17 +87,17 @@
                                 </label>
                                 <div class="flex gap-2">
                                     <button type="button" id="prev_dates"
-                                        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-violet-200 dark:border-gray-600 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                                        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-violet-200 dark:border-gray-600 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer">
                                         Anterior
                                     </button>
                                     <button type="button" id="next_dates"
-                                        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-violet-200 dark:border-gray-600 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                                        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-violet-200 dark:border-gray-600 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-gray-700 transition-colors duration-150 cursor-pointer">
                                         Siguiente
                                     </button>
                                 </div>
                             </div>
 
-                            <div id="date_options" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2"></div>
+                            <div id="date_options" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 cursor-pointer"></div>
 
                             @error('appointment_date')
                             <small class="text-red-500 dark:text-red-400 text-xs">{{ $message }}</small>
@@ -201,11 +201,11 @@
                 button.type = 'button';
 
                 if (dateInput.value == value) {
-                    button.className = 'border rounded-xl px-3 py-2 text-left bg-violet-600 text-white border-violet-600 shadow-sm';
+                    button.className = 'border rounded-xl px-3 py-2 text-left bg-violet-600 text-white border-violet-600 shadow-sm cursor-pointer';
                 } else {
                     button.className = isDark()
-                        ? 'border rounded-xl px-3 py-2 text-left bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600'
-                        : 'border rounded-xl px-3 py-2 text-left bg-white text-violet-700 border-violet-200 hover:bg-violet-50';
+                        ? 'border rounded-xl px-3 py-2 text-left bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600 cursor-pointer'
+                        : 'border rounded-xl px-3 py-2 text-left bg-white text-violet-700 border-violet-200 hover:bg-violet-50 cursor-pointer';
                 }
 
                 button.innerHTML = `
@@ -234,11 +234,11 @@
                 button.type = 'button';
 
                 if (timeInput.value == time) {
-                    button.className = 'border rounded-xl px-3 py-2 text-sm font-semibold bg-violet-600 text-white border-violet-600 shadow-sm';
+                    button.className = 'border rounded-xl px-3 py-2 text-sm font-semibold bg-violet-600 text-white border-violet-600 shadow-sm cursor-pointer';
                 } else {
                     button.className = isDark()
-                        ? 'border rounded-xl px-3 py-2 text-sm font-semibold bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600'
-                        : 'border rounded-xl px-3 py-2 text-sm font-semibold bg-white text-violet-700 border-violet-200 hover:bg-violet-50';
+                        ? 'border rounded-xl px-3 py-2 text-sm font-semibold bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600 cursor-pointer'
+                        : 'border rounded-xl px-3 py-2 text-sm font-semibold bg-white text-violet-700 border-violet-200 hover:bg-violet-50 cursor-pointer';
                 }
 
                 button.textContent = time;
