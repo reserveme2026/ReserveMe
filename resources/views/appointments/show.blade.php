@@ -23,21 +23,26 @@
                 <div class="p-6 flex flex-col gap-3">
 
                     @php
-                        $statusClasses = match ($appointment->status) {
-                            'confirmed' => 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800',
-                            'cancelled' => 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800',
-                            default => 'bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800',
-                        };
-                        $statusLabel = match ($appointment->status) {
-                            'confirmed' => 'Confirmada',
-                            'cancelled' => 'Cancelada',
-                            default => 'Pendiente',
-                        };
+                    $statusClasses = match ($appointment->status) {
+                    'confirmed' => 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800',
+                    'cancelled' => 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800',
+                    default => 'bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800',
+                    };
+                    $statusLabel = match ($appointment->status) {
+                    'confirmed' => 'Confirmada',
+                    'cancelled' => 'Cancelada',
+                    default => 'Pendiente',
+                    };
                     @endphp
 
                     <div class="flex items-center gap-2 text-sm">
                         <span class="font-medium text-violet-400 dark:text-violet-500 w-36">Negocio</span>
                         <span class="text-violet-950 dark:text-gray-100">{{ $business->name }}</span>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="font-medium text-violet-400 dark:text-violet-500 w-36">Cliente</span>
+                        <span class="text-violet-800 dark:text-gray-300">{{ $appointment->user->name }}</span>
                     </div>
 
                     <div class="flex items-center gap-2 text-sm">
