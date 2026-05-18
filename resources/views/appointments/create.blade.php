@@ -208,9 +208,9 @@
                 if (dateInput.value == value) {
                     button.className = 'border rounded-xl px-3 py-2 text-left bg-violet-600 text-white border-violet-600 shadow-sm cursor-pointer';
                 } else {
-                    button.className = isDark()
-                        ? 'border rounded-xl px-3 py-2 text-left bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600 cursor-pointer'
-                        : 'border rounded-xl px-3 py-2 text-left bg-white text-violet-700 border-violet-200 hover:bg-violet-50 cursor-pointer';
+                    button.className = isDark() ?
+                        'border rounded-xl px-3 py-2 text-left bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600 cursor-pointer' :
+                        'border rounded-xl px-3 py-2 text-left bg-white text-violet-700 border-violet-200 hover:bg-violet-50 cursor-pointer';
                 }
 
                 button.innerHTML = `
@@ -218,7 +218,7 @@
                     <span class="block text-sm font-semibold">${dateText(date)}</span>
                 `;
 
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     dateInput.value = value;
                     clearTimes();
                     showDates();
@@ -228,27 +228,31 @@
                 dateOptions.appendChild(button);
             }
 
-            prevDatesButton.disabled = startDay == 0;
+            if (startDay == 0) {
+                prevDatesButton.disabled = true;
+            } else {
+                prevDatesButton.disabled = false;
+            }
         }
 
         function showTimes(times) {
             timeOptions.innerHTML = '';
 
-            times.forEach(function (time) {
+            times.forEach(function(time) {
                 const button = document.createElement('button');
                 button.type = 'button';
 
                 if (timeInput.value == time) {
                     button.className = 'border rounded-xl px-3 py-2 text-sm font-semibold bg-violet-600 text-white border-violet-600 shadow-sm cursor-pointer';
                 } else {
-                    button.className = isDark()
-                        ? 'border rounded-xl px-3 py-2 text-sm font-semibold bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600 cursor-pointer'
-                        : 'border rounded-xl px-3 py-2 text-sm font-semibold bg-white text-violet-700 border-violet-200 hover:bg-violet-50 cursor-pointer';
+                    button.className = isDark() ?
+                        'border rounded-xl px-3 py-2 text-sm font-semibold bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600 cursor-pointer' :
+                        'border rounded-xl px-3 py-2 text-sm font-semibold bg-white text-violet-700 border-violet-200 hover:bg-violet-50 cursor-pointer';
                 }
 
                 button.textContent = time;
 
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     timeInput.value = time;
                     showTimes(times);
                 });
@@ -284,7 +288,7 @@
                 });
         }
 
-        prevDatesButton.addEventListener('click', function () {
+        prevDatesButton.addEventListener('click', function() {
             if (startDay >= 7) {
                 startDay -= 7;
                 dateInput.value = dateValue(new Date(new Date().setDate(new Date().getDate() + startDay)));
@@ -293,7 +297,7 @@
             }
         });
 
-        nextDatesButton.addEventListener('click', function () {
+        nextDatesButton.addEventListener('click', function() {
             startDay += 7;
             dateInput.value = dateValue(new Date(new Date().setDate(new Date().getDate() + startDay)));
             showDates();
