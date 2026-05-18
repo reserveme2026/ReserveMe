@@ -155,11 +155,20 @@
                             <p class="text-violet-800 dark:text-gray-300">{{ $appointment->user?->name ?? 'Sin usuario' }}</p>
                         </div>
 
-                        <div class="flex items-center justify-between gap-2">
-                            <p class="text-base font-bold text-violet-950 dark:text-gray-100">{{ $appointment->employee->name }}</p>
-                            <span class="inline-flex shrink-0 px-2 py-0.5 rounded-full text-xs font-semibold {{ $statusClasses }}">
-                                {{ $statusLabel }}
-                            </span>
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Empleado</span>
+                                <p class="text-violet-800 dark:text-gray-300">{{ $appointment->employee?->name ?? 'Sin empleado' }}</p>
+                            </div>
+
+                            <div class="text-right">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Estado</span>
+                                <div>
+                                    <span class="inline-flex shrink-0 px-2 py-0.5 rounded-full text-xs font-semibold {{ $statusClasses }}">
+                                        {{ $statusLabel }}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-y-2 text-sm">
