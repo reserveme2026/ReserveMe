@@ -299,6 +299,13 @@ class AppointmentController extends Controller
 
         $appointment->update($data);
 
+        $appointment->update($data);
+
+        if ($user->role == 'client') {
+            return redirect()->route('appointments.myAppointments')
+                ->with('success', 'Cita actualizada y enviada de nuevo para confirmación');
+        }
+
         return redirect()->route('businesses.appointments.index', $business)
             ->with('success', 'Cita actualizada correctamente');
     }
