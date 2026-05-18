@@ -33,6 +33,10 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('businesses.index');
         }
 
+        if ($user->role == 'employee') {
+            return redirect()->route('businesses.index');
+        }
+
         abort(403);
     })->name('dashboard');
 
@@ -49,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('businesses.services', ServiceController::class);
     Route::resource('businesses.employees', EmployeeController::class);
     Route::get('/businesses/{business}/appointments/available-times', [AppointmentController::class, 'availableTimes'])
-    ->name('businesses.appointments.availableTimes');
+        ->name('businesses.appointments.availableTimes');
     Route::resource('businesses.appointments', AppointmentController::class);
 
     Route::resource('employees.schedules', ScheduleController::class);

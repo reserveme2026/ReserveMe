@@ -13,11 +13,11 @@ class ServiceController extends Controller
      */
     public function index(Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -31,11 +31,11 @@ class ServiceController extends Controller
      */
     public function create(Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -47,11 +47,11 @@ class ServiceController extends Controller
      */
     public function store(Request $request, Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -79,11 +79,11 @@ class ServiceController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -99,11 +99,11 @@ class ServiceController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -119,11 +119,11 @@ class ServiceController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -149,11 +149,11 @@ class ServiceController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 

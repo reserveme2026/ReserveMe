@@ -13,11 +13,11 @@ class BlockedTimeController extends Controller
      */
     public function index(Employee $employee)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -34,11 +34,11 @@ class BlockedTimeController extends Controller
      */
     public function create(Employee $employee)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -51,11 +51,11 @@ class BlockedTimeController extends Controller
      */
     public function store(Request $request, Employee $employee)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -88,11 +88,11 @@ class BlockedTimeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -107,11 +107,11 @@ class BlockedTimeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -127,11 +127,11 @@ class BlockedTimeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -163,11 +163,11 @@ class BlockedTimeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $employee->business->owner_id != auth()->id()) {
+        if ($employee->business->owner_id != auth()->id()) {
             abort(403);
         }
 

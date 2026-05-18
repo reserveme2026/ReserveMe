@@ -14,11 +14,11 @@ class EmployeeController extends Controller
      */
     public function index(Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -32,11 +32,11 @@ class EmployeeController extends Controller
      */
     public function create(Business $business)
     {
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -48,45 +48,45 @@ class EmployeeController extends Controller
      */
     public function store(Request $request, Business $business)
     {
-        if (auth()->user()->role == 'client') {
-        abort(403);
-    }
+        if (auth()->user()->role != 'owner') {
+            abort(403);
+        }
 
-    if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
-        abort(403);
-    }
+        if ($business->owner_id != auth()->id()) {
+            abort(403);
+        }
 
-    $data = $request->validate([
-        'email' => 'required|email|unique:employees,email',
-        'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
-    ]);
-
-    $user = User::where('email', $data['email'])->first();
-
-    if (!$user) {
-        return back()->withInput()
-            ->with('error', 'El empleado debe tener un usuario registrado con ese correo');
-    }
-
-    if ($user->role == 'admin' || $user->role == 'owner') {
-        return back()->withInput()
-            ->with('error', 'Ese correo pertenece a un usuario que no puede convertirse en empleado');
-    }
-
-    if ($user->role == 'client') {
-        $user->update([
-            'role' => 'employee',
+        $data = $request->validate([
+            'email' => 'required|email|unique:employees,email',
+            'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
         ]);
-    }
 
-    $data['name'] = $user->name;
-    $data['email'] = $user->email;
-    $data['business_id'] = $business->id;
+        $user = User::where('email', $data['email'])->first();
 
-    Employee::create($data);
+        if (!$user) {
+            return back()->withInput()
+                ->with('error', 'El empleado debe tener un usuario registrado con ese correo');
+        }
 
-    return redirect()->route('businesses.employees.index', $business)
-        ->with('success', 'Empleado creado correctamente');
+        if ($user->role == 'admin' || $user->role == 'owner') {
+            return back()->withInput()
+                ->with('error', 'Ese correo pertenece a un usuario que no puede convertirse en empleado');
+        }
+
+        if ($user->role == 'client') {
+            $user->update([
+                'role' => 'employee',
+            ]);
+        }
+
+        $data['name'] = $user->name;
+        $data['email'] = $user->email;
+        $data['business_id'] = $business->id;
+
+        Employee::create($data);
+
+        return redirect()->route('businesses.employees.index', $business)
+            ->with('success', 'Empleado creado correctamente');
     }
 
     /**
@@ -98,11 +98,11 @@ class EmployeeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -118,11 +118,11 @@ class EmployeeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
 
@@ -135,47 +135,60 @@ class EmployeeController extends Controller
     public function update(Request $request, Business $business, Employee $employee)
     {
         if ($employee->business_id != $business->id) {
-        abort(404);
-    }
+            abort(404);
+        }
 
-    if (auth()->user()->role == 'client') {
-        abort(403);
-    }
+        if (auth()->user()->role != 'owner') {
+            abort(403);
+        }
 
-    if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
-        abort(403);
-    }
+        if ($business->owner_id != auth()->id()) {
+            abort(403);
+        }
 
-    $data = $request->validate([
-        'email' => 'required|email|unique:employees,email,' . $employee->id,
-        'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
-    ]);
-
-    $user = User::where('email', $data['email'])->first();
-
-    if (!$user) {
-        return back()->withInput()
-            ->with('error', 'El empleado debe tener un usuario registrado con ese correo');
-    }
-
-    if ($user->role == 'admin' || $user->role == 'owner') {
-        return back()->withInput()
-            ->with('error', 'Ese correo pertenece a un usuario que no puede convertirse en empleado');
-    }
-
-    if ($user->role == 'client') {
-        $user->update([
-            'role' => 'employee',
+        $data = $request->validate([
+            'email' => 'required|email|unique:employees,email,' . $employee->id,
+            'phone' => 'required|regex:/^(\+34\s?)?[6789]\d{8}$/',
         ]);
-    }
 
-    $data['name'] = $user->name;
-    $data['email'] = $user->email;
+        $user = User::where('email', $data['email'])->first();
 
-    $employee->update($data);
+        if (!$user) {
+            return back()->withInput()
+                ->with('error', 'El empleado debe tener un usuario registrado con ese correo');
+        }
 
-    return redirect()->route('businesses.employees.index', $business)
-        ->with('success', 'Empleado actualizado correctamente');
+        if ($user->role == 'admin' || $user->role == 'owner') {
+            return back()->withInput()
+                ->with('error', 'Ese correo pertenece a un usuario que no puede convertirse en empleado');
+        }
+
+        if ($user->role == 'client') {
+            $user->update([
+                'role' => 'employee',
+            ]);
+        }
+
+        $data['name'] = $user->name;
+        $data['email'] = $user->email;
+
+        $oldEmail = $employee->email;
+
+        $employee->update($data);
+
+        if ($oldEmail != $employee->email) {
+            $oldUser = User::where('email', $oldEmail)->first();
+
+            if ($oldUser && $oldUser->role == 'employee' && !Employee::where('email', $oldEmail)->exists()) {
+                $oldUser->update([
+                    'role' => 'client',
+                    'owner_plan' => null,
+                ]);
+            }
+        }
+
+        return redirect()->route('businesses.employees.index', $business)
+            ->with('success', 'Empleado actualizado correctamente');
     }
 
     /**
@@ -187,15 +200,26 @@ class EmployeeController extends Controller
             abort(404);
         }
 
-        if (auth()->user()->role == 'client') {
+        if (auth()->user()->role != 'owner') {
             abort(403);
         }
 
-        if (auth()->user()->role == 'owner' && $business->owner_id != auth()->id()) {
+        if ($business->owner_id != auth()->id()) {
             abort(403);
         }
+
+        $employeeEmail = $employee->email;
 
         $employee->delete();
+
+        $user = User::where('email', $employeeEmail)->first();
+
+        if ($user && $user->role == 'employee' && !Employee::where('email', $employeeEmail)->exists()) {
+            $user->update([
+                'role' => 'client',
+                'owner_plan' => null,
+            ]);
+        }
 
         return redirect()->route('businesses.employees.index', $business)
             ->with('success', 'Empleado eliminado correctamente');
