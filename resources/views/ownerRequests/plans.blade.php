@@ -60,7 +60,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {{-- Starter --}}
             <div class="bg-white dark:bg-gray-800 border border-emerald-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
                 <div class="h-1 w-full bg-emerald-500"></div>
                 <div class="p-6 flex flex-col gap-5 h-full">
@@ -121,7 +120,6 @@
                 </div>
             </div>
 
-            {{-- Pro --}}
             <div class="bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
                 <div class="h-1 w-full bg-violet-500"></div>
                 <div class="p-6 flex flex-col gap-5 h-full">
@@ -182,7 +180,6 @@
                 </div>
             </div>
 
-            {{-- Premium --}}
             <div class="bg-white dark:bg-gray-800 border border-amber-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
                 <div class="h-1 w-full bg-amber-500"></div>
                 <div class="p-6 flex flex-col gap-5 h-full">

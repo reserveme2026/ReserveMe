@@ -37,7 +37,6 @@
 
         @if ($blockedTimes->count() > 0)
 
-            {{-- TABLA: lg+ --}}
             <div class="hidden lg:block bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
                 <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
                 <table class="w-full text-sm text-left">
@@ -75,19 +74,16 @@
                 </table>
             </div>
 
-            {{-- TARJETAS: móvil/tablet (< lg) --}}
             <div class="lg:hidden flex flex-col gap-4">
                 @foreach ($blockedTimes as $blockedTime)
                     <div class="bg-white dark:bg-gray-800 border border-violet-100 dark:border-gray-600 rounded-2xl shadow-sm overflow-hidden">
                         <div class="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-500"></div>
                         <div class="p-4 flex flex-col gap-3">
 
-                            {{-- Cabecera --}}
                             <div>
                                 <p class="text-base font-bold text-violet-950 dark:text-gray-100">{{ $blockedTime->block_date }}</p>
                             </div>
 
-                            {{-- Detalles --}}
                             <div class="grid grid-cols-2 gap-y-2 text-sm">
                                 <div>
                                     <span class="text-[10px] font-bold uppercase tracking-widest text-violet-400 dark:text-violet-500">Hora inicio</span>
@@ -105,7 +101,6 @@
                                 @endif
                             </div>
 
-                            {{-- Acciones --}}
                             <div class="grid grid-cols-2 gap-2 pt-1 border-t border-violet-50 dark:border-gray-700">
                                 <a href="{{ route('employees.blockedTimes.show', [$employee, $blockedTime]) }}"
                                     class="text-center px-3 py-1.5 text-sm font-semibold bg-violet-100 dark:bg-violet-900 hover:bg-violet-200 dark:hover:bg-violet-800 text-violet-700 dark:text-violet-300 rounded-lg transition-colors duration-150">Ver</a>
